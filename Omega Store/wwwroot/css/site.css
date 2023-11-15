@@ -1,0 +1,129 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+.giftPop {
+    width: 24em;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.9);
+    box-shadow: rgba(0, 0, 255, 0.5) 0px 5px 250px 0px;
+    font-family: 'Poppins';
+    font-size: 14px;
+    overflow: hidden;
+    text-align: center;
+}
+.blur {
+    width: 100vw;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    position: fixed;
+    z-index:10;
+}
+.giftPop {
+    background-color: white;
+    border-color: black;
+    padding: 2em;
+    position: relative
+}
+.full{
+    width: 100%
+}
+
+.confirmDivBtnHolder {
+    padding-bottom: 2em
+}
+
+.giftPop img {
+    max-width: 200px
+}
+
+.giftPop h2 {
+}
+
+.giftPop button {
+    margin-top: 1em
+}
+
+.giftPop span {
+    font-size: 1.5em;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    width: 35px;
+    height: 35px;
+    padding: 0 !important;
+    border-radius: 1em;
+    padding-top: 1px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 3px 10px 0px;
+    cursor: pointer
+}
+
+    .giftPop span:active {
+        box-shadow: none;
+    }
+
+.popSendLoader {
+    width: 3em;
+    margin-top: 1em
+}
+
+.bold {
+    font-weight: bold !important;
+}
+
+.loader {
+    max-width: 1em !important;
+    margin-bottom: 2em !important;
+}
+
+.alertFloater {
+    color: white;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.7);
+    bottom: 3em;
+    padding: 1em;
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 10px 0px;
+    font-family: 'Poppins';
+    font-size: 14px;
+    right: 20px;
+    max-width: 15em;
+    max-height: 4em;
+    overflow: hidden;
+    padding-bottom: 2em
+}
+
+.alertSuccess {
+    background-color: rgba(0, 105, 0, 0.8) !important;
+}
+
+.alertDanger {
+    background-color: rgba(255, 0, 0, 0.8) !important;
+}
+
+.alertWarning {
+    background-color: rgba(255, 150, 0, 0.7) !important;
+}
+
+.hidden {
+    display: none !important
+}
+
+.pointer {
+    cursor: pointer !important;
+}
