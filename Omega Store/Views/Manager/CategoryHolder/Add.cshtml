@@ -1,0 +1,115 @@
+﻿@model Store.Model.ViewModel.MainVM
+@{
+    ViewData["Title"] = "Add New Category";
+}
+
+<!-- Breadcrumb Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" asp-action="index" asp-controller="manager">Manager</a>
+                <a class="breadcrumb-item text-dark" asp-action="category" asp-controller="manager">Category</a>
+                <span class="breadcrumb-item active">New</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Contact Start -->
+<div class="container-fluid">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Add New Category</span></h2>
+
+    <partial name="_commonNav" />
+    <div class="row px-xl-5">
+        <div class="col-lg-7 bg-light p-30">
+            <h6 class="bold uppercase">Add A New Category</h6>
+            <p class="mb-4">
+                Every store item must be assigned to a specific category, and each category must be part of a group.<br />
+                <hr />
+            </p>
+            <form id="contactForm" asp-action="createcategory" asp-controller="manager" method="post" enctype="multipart/form-data">
+
+                <div class="control-group mb-1 miniTopSpace">
+                    <input type="text" class="form-control mb-3" id="CatName" name="Category.Name" placeholder="Category Name" required />
+                    <input type="file" class="btn btn-dark full" id="CatImage" name="image" required />
+                    <div class=" mb-3">
+                        <small>Best image size: 150 x 150</small>
+                    </div>
+
+                    <select name="Category.GroupID" class="form-control mb-1" id="group">
+                        <option value="">- Select A Group -</option>
+                        @foreach (var group in Model.Groups)
+                        {
+                            <option value="@group.ID">@group.Name</option>
+                        }
+                    </select>
+                    <input type="text" class="form-control hidden" id="groupAlternate" name="Group.Name" placeholder="Group Name" />
+                    <div class="mb-3">
+                        <small class="text-info pointer" id="newPointer" onclick="Toggle('newPointer')">Add to New Group</small>
+                        <small class="text-info pointer hidden" id="existigPointer" onclick="Toggle('existigPointer')">Use Existing Group</small>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary py-2 px-4 full" type="submit" onclick="return(Validate())" id="sendMessageButton">
+                        Save Category <i class="fa fa-save"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-5">
+            <div class="bg-light p-30 mb-30">
+             
+            </div>
+            @*   <div class="bg-light p-30 mb-3">
+            <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
+            <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
+            <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+            </div>*@
+        </div>
+    </div>
+</div>
+<!-- Contact End -->
+
+<script>
+    function Toggle(val) {
+        var existigPointer = document.getElementById("existigPointer");
+        var newPointer = document.getElementById("newPointer");
+        var groupAlternate = document.getElementById("groupAlternate");
+        var group = document.getElementById("group");
+        if (val == "existigPointer") {
+            newPointer.classList.remove("hidden");
+            existigPointer.classList.add("hidden");
+            groupAlternate.classList.add("hidden");
+            group.classList.remove("hidden");
+            groupAlternate.value = "";
+        } else {
+            newPointer.classList.add("hidden");
+            existigPointer.classList.remove("hidden");
+            groupAlternate.classList.remove("hidden");
+            group.classList.add("hidden");
+            group.value = "";
+        }
+    }
+
+    function Validate() {
+        var groupAlternate = document.getElementById("groupAlternate");
+        var group = document.getElementById("group");
+        var catName = document.getElementById("CatName");
+        var catImage = document.getElementById("CatImage");
+
+        if (catName.value == "") {
+            alertDanger("Add Category Name");
+            return false
+        }
+        else if (catImage.value == "") {
+            alertDanger("Add Category Image");
+            return false
+        }
+        else if (group.value == "" && groupAlternate.value == "") {
+            alertDanger("Add or Select A Group");
+            return false;
+        }
+        return true;
+    }
+</script>

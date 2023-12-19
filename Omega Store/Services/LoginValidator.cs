@@ -1,22 +1,31 @@
 ﻿using Newtonsoft.Json;
 using Store.Business;
 using Store.Data.Interface;
+using Store.Model;
 using Store.Model.Hybrid;
+using Store.Model.ViewModel;
 
-namespace Omega_Store.Service
+namespace Omega_Store.Services
 {
     public class LoginValidator
     {
         private readonly IHttpContextAccessor _context;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly GroupBusiness _groupBusiness;
 
-        public LoginValidator(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
+        public LoginValidator(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, GroupBusiness groupBusiness)
         {
             _context = httpContextAccessor;
             _unitOfWork = unitOfWork;
+            _groupBusiness = groupBusiness;
         }
 
         public IHttpContextAccessor Context() { return _context; }
+
+        public void SetSession(string key, string json)
+        {
+            _context.HttpContext.Session.SetString(key, json);
+        }
 
         public async Task<bool> IsLoggedInAuth()
         {
@@ -118,54 +127,54 @@ namespace Omega_Store.Service
             return user.ID;
         }
 
-        public async Task<bool> isDetailCompleteAuth()
-        {
-            var user = await GetUserAuth();
-            try
-            {
-                if (user == null)
-                {
-                    return false;
-                }
+        //public async Task<bool> isDetailCompleteAuth()
+        //{
+        //    var user = await GetUserAuth();
+        //    try
+        //    {
+        //        if (user == null)
+        //        {
+        //            return false;
+        //        }
 
-                if ((!string.IsNullOrEmpty(user.Fname) && !string.IsNullOrEmpty(user.Address) && user.InstitutionID != default && user.CountryID != default && user.IsEmailVer && !string.IsNullOrEmpty(user.ProfileImage)) || user.Username == "trendycampus")
-                {
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            return false;
-        }
-        public bool isDetailComplete()
-        {
-            var user = GetUser();
-            try
-            {
-                if (user == null)
-                {
-                    return false;
-                }
+        //        if ((!string.IsNullOrEmpty(user.Fname) && !string.IsNullOrEmpty(user.Address) && user.InstitutionID != default && user.CountryID != default && user.IsEmailVer && !string.IsNullOrEmpty(user.ProfileImage)) || user.Username == "trendycampus")
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+        //    return false;
+        //}
+        //public bool isDetailComplete()
+        //{
+        //    var user = GetUser();
+        //    try
+        //    {
+        //        if (user == null)
+        //        {
+        //            return false;
+        //        }
 
-                if ((!string.IsNullOrEmpty(user.Fname) && !string.IsNullOrEmpty(user.Address) && user.InstitutionID != default && user.CountryID != default && user.IsEmailVer && !string.IsNullOrEmpty(user.ProfileImage)) || user.Username == "trendycampus")
-                {
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            return false;
-        }
+        //        if ((!string.IsNullOrEmpty(user.Fname) && !string.IsNullOrEmpty(user.Address) && user.InstitutionID != default && user.CountryID != default && user.IsEmailVer && !string.IsNullOrEmpty(user.ProfileImage)) || user.Username == "trendycampus")
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+        //    return false;
+        //}
 
-        public UserHybrid? GetUser()
+        public User? GetUser()
         {
             try
             {
                 var val = _context.HttpContext.Session.GetString("user");
                 string str = val == null ? "" : val;
-                var user = JsonConvert.DeserializeObject<UserHybrid>(str);
+                var user = JsonConvert.DeserializeObject<User>(str);
 
                 if (user == null || user.IsBanned || !user.IsActive || GenericBusiness.IsLocked && !user.IsDev)
                 {
@@ -179,20 +188,20 @@ namespace Omega_Store.Service
             }
         }
 
-        public async Task<UserHybrid ?> GetUserAuth()
+        public async Task<User ?> GetUserAuth()
         {
             try
             {
                 var val = _context.HttpContext.Session.GetString("user");
                 string str = val == null ? "" : val;
-                UserHybrid? user = JsonConvert.DeserializeObject<UserHybrid>(str);
+                User? user = JsonConvert.DeserializeObject<User>(str);
 
                 if (user == null || user.IsBanned || !user.IsActive || (GenericBusiness.IsLocked && !user.IsDev))
                 {
                     return null;
                 }
 
-                if (await _unitOfWork.LoginMonitors.GetMonitorByUserID(user.ID, user.AppID, user.StoreID) != null)
+                if (await _unitOfWork.LoginMonitors.GetMonitorByUserID(user.ID, user.StoreID) != null)
                 {
                     return user;
                 }
@@ -215,6 +224,19 @@ namespace Omega_Store.Service
             catch (Exception)
             {
                 return 0;
+            }
+        }
+
+        public async Task<IEnumerable<GroupVM>> GetCatList()
+        {
+            try
+            {
+                return await _groupBusiness.GetCatList();
+
+            }
+            catch (Exception)
+            {
+                return new List<GroupVM>();
             }
         }
         public void LogOut()

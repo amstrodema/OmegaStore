@@ -16,5 +16,13 @@ namespace Store.Data.Repository
         {
 
         }
+        public async Task<IEnumerable<Category>> GetByStoreID(Guid storeID)
+        {
+            return await GetBy(p => p.StoreID == storeID);
+        }
+        public async Task<Category> GetByCategoryTag(string tag, Guid storeID)
+        {
+            return await GetOneBy(p => p.Tag == tag && p.StoreID == storeID);
+        }
     }
 }

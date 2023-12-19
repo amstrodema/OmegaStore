@@ -16,9 +16,17 @@ namespace Store.Data.Repository
         {
 
         }
+        public async Task<User> GetActiveUserByUserName(string username)
+        {
+            return await GetOneBy(u => u.Username == username && u.IsActive);
+        }
         public async Task<User> GetActiveUserByUserName(string username, Guid storeID)
         {
             return await GetOneBy(u => u.Username == username && u.IsActive && u.StoreID == storeID);
+        }
+        public async Task<User> GetActiveUserByPhone(string phone, Guid storeID)
+        {
+            return await GetOneBy(u => u.Tel == phone && u.IsActive && u.StoreID == storeID);
         }
         public async Task<User> GetActiveUserByUserID(Guid userID, Guid storeID)
         {
@@ -27,6 +35,10 @@ namespace Store.Data.Repository
         public async Task<User> GetUserByUserNameOrEmail(string usernameOrEmail, Guid storeID)
         {
             return await GetOneBy(u => u.Username == usernameOrEmail || u.Email == usernameOrEmail && u.StoreID == storeID);
+        }
+        public async Task<User> usernameOrPasswordorPhone(string usernameOrEmailorPhone, Guid storeID)
+        {
+            return await GetOneBy(u => u.Username == usernameOrEmailorPhone || u.Email == usernameOrEmailorPhone|| u.Tel == usernameOrEmailorPhone && u.StoreID == storeID);
         }
         public async Task<User> GetUserByUserNameOrEmail(string username, string email, string tel, Guid storeID)
         {

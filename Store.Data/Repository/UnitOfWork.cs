@@ -32,10 +32,11 @@ namespace Store.Data.Repository
         public IPayment Payments { get; }
         public ITransaction Transactions { get; }
         public ILoginMonitor LoginMonitors { get; }
+        public IGroup Groups { get; }
 
         public UnitOfWork(OmegaContext db, IUser users, IOrder orders, ICategory categories, IBillingDetail billingDetails, ICustomer customers, IFeature features, IFeatureOption featureOptions,
             IFile files, IItem items, IItemFeature itemFeatures, IKey keys, INotification notifications, IOrderItem orderItems, IReview reviews, IShippingDetail shippingDetails, IStore stores,
-            ITracking trackings, IPayment payments, ITransaction transactions, ILoginMonitor loginMonitors)
+            ITracking trackings, IPayment payments, ITransaction transactions, ILoginMonitor loginMonitors, IGroup groups)
         {
             _db = db;
             Users = users;
@@ -58,6 +59,7 @@ namespace Store.Data.Repository
             Payments = payments;
             Transactions = transactions;
             LoginMonitors = loginMonitors;
+            Groups = groups;
         }
 
 

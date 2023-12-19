@@ -4,6 +4,8 @@
     {
         public Guid ID { get; set; }
         public Guid StoreID { get; set; }
+        public Guid ItemID { get; set; }
+        public Guid FeatureID { get; set; }
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TrendyCampus\Rave\Rave.csproj" />
+    <!--<ProjectReference Include="..\..\TrendyCampus\Rave\Rave.csproj" />-->
     <ProjectReference Include="..\Store.Model\Store.Model.csproj" />
   </ItemGroup>
 

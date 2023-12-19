@@ -1,7 +1,31 @@
-﻿
+﻿@model Store.Model.ViewModel.LoginVM
 @{
     ViewData["Title"] = "Login";
+    Layout = "_EmptyLayout";
 }
+<div class="login">
+    <div class="container vertical-center">
+        <div class="holder text-center vertical-center">
+            <div>
+                <div>
+                    <a href="" class="text-decoration-none">
+                        <span class="h1 text-uppercase text-primary bg-dark px-2">Multi</span>
+                        <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+                    </a>
+                </div>
 
-<h1>Login</h1>
-
+                <form asp-action="post" asp-controller="manager" method="post">
+                    <input type="text" class="form-control" name="UsernameOrEmail" placeholder="Username / Email" />
+                    <input type="password" class="form-control" name="Password"  placeholder="Password" />
+                    <button type="submit" class="btn btn-primary full">Login</button>
+                    <hr />
+                    <a href="#">Forgot Password</a>
+                </form>
+            @*    <div>
+                    Already Registered? <a href="#" class="link-primary">Sign In</a>
+                </div>*@
+            </div>
+           
+        </div>
+    </div>
+</div>

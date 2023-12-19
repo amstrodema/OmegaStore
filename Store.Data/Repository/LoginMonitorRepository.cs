@@ -16,9 +16,17 @@ namespace Store.Data.Repository
         {
 
         }
-        public async Task<LoginMonitor> GetMonitorByUserID(Guid userID, Guid appID, Guid storeID)
+        public async Task<LoginMonitor> GetMonitorByUserID(Guid userID, Guid storeID)
         {
-            return await GetOneBy(p => p.UserID == userID && p.ClientCode == appID && p.StoreID == storeID);
+            return await GetOneBy(p => p.UserID == userID && p.StoreID == storeID);
+        }
+        public async Task<LoginMonitor> GetMonitorByUserID(Guid userID, Guid storeID, Guid appCode)
+        {
+            return await GetOneBy(p => p.UserID == userID && p.StoreID == storeID && p.ClientCode == appCode);
+        }
+        public async Task<LoginMonitor> GetMonitorByUserIDOnly(Guid userID)
+        {
+            return await GetOneBy(u => u.UserID == userID);
         }
     }
 }

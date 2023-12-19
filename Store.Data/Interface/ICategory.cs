@@ -9,5 +9,7 @@ namespace Store.Data.Interface
 {
     public interface ICategory : IGeneric<Category>
     {
+        Task<IEnumerable<Category>> GetByStoreID(Guid storeID);
+        Task<Category> GetByCategoryTag(string tag, Guid storeID);
     }
 }

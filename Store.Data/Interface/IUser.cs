@@ -9,10 +9,13 @@ namespace Store.Data.Interface
 {
     public interface IUser : IGeneric<User>
     {
+        Task<User> GetActiveUserByUserName(string username);
         Task<User> GetUserByUserNameOrEmail(string usernameOrEmail, Guid storeID);
         Task<User> GetActiveUserByUserName(string username, Guid storeID);
         Task<User> GetUserByUserNameOrEmail(string username, string email, string tel, Guid storeID);
         Task<User> GetActiveUserByUserID(Guid userID, Guid storeID);
         Task<IEnumerable<User>> GetReferrals(string username, Guid storeID);
+        Task<User> GetActiveUserByPhone(string phone, Guid storeID);
+        Task<User> usernameOrPasswordorPhone(string usernameOrEmailorPhone, Guid storeID);
     }
 }

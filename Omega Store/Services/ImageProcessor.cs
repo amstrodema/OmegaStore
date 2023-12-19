@@ -1,4 +1,4 @@
-﻿namespace Omega_Store.Service
+﻿namespace Omega_Store.Services
 {
     public class ImageProcessor
     {

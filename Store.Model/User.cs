@@ -5,7 +5,7 @@
         public Guid ID { get; set; }
         public Guid RoleID { get; set; }
         public Guid MembershipID { get; set; }
-        public Guid InstitutionID { get; set; }
+        public Guid AppID { get; set; }
         public Guid CountryID { get; set; }
         public Guid StoreID { get; set; }
         public string ReferredBy { get; set; } = string.Empty;
@@ -32,6 +32,7 @@
         public bool IsEmailVer { get; set; }
         public bool IsBanned { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsOwner { get; set; }
         public bool IsInfluencer { get; set; }
         public bool IsLearningCenter { get; set; }
 

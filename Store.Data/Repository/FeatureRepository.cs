@@ -16,5 +16,9 @@ namespace Store.Data.Repository
         {
 
         }
+        public async Task<IEnumerable<Feature>> GetByItemID(Guid itemID)
+        {
+            return await GetBy(o => o.ItemID == itemID);
+        }
     }
 }

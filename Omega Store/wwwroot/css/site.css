@@ -13,8 +13,20 @@ html {
   min-height: 100%;
 }
 
+a{
+    text-decoration:none !important
+}
+
+option{
+    font-size:14px
+}
+
 body {
   margin-bottom: 60px;
+  font-size:14px
+}
+.nowrap{
+    white-space: nowrap !important
 }
 .giftPop {
     width: 24em;
@@ -41,7 +53,7 @@ body {
     position: relative
 }
 .full{
-    width: 100%
+    width: 100% !important
 }
 
 .confirmDivBtnHolder {
@@ -91,6 +103,13 @@ body {
     max-width: 1em !important;
     margin-bottom: 2em !important;
 }
+.capitalize {
+    text-transform: capitalize;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
 
 .alertFloater {
     color: white;
@@ -105,7 +124,8 @@ body {
     max-width: 15em;
     max-height: 4em;
     overflow: hidden;
-    padding-bottom: 2em
+    padding-bottom: 2em;
+    z-index:2000
 }
 
 .alertSuccess {
@@ -123,7 +143,37 @@ body {
 .hidden {
     display: none !important
 }
+.icon-1{
+    font-size:5em
+}
 
 .pointer {
     cursor: pointer !important;
+}
+.vertical-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: calc(100% - 1rem) !important;
+}
+.login .holder{
+    border: solid 1px #ccc;
+    width: 350px;
+    padding: 2em;
+    min-height:50vh;
+    background-color: white;
+    margin-top:3em
+}
+.login .holder input{
+   margin-top: 1em
+}
+.login .holder .btn{
+   margin-top: 1em;
+   text-transform: uppercase
+}
+.pad-slim {
+    /*padding: 2.12em*/
+}
+summary{
+    list-style:none;
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Omega_Store.Models;
+using Store.Business;
+using Store.Model.ViewModel;
 using System.Diagnostics;
 
 namespace Omega_Store.Controllers
@@ -7,15 +9,18 @@ namespace Omega_Store.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly GeneralBusiness _generalBusiness;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, GeneralBusiness generalBusiness)
         {
             _logger = logger;
+            _generalBusiness = generalBusiness;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+           var res = await _generalBusiness.GetVMForHome();
+            return View(res);
         }
 
         public IActionResult Privacy()

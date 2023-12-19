@@ -30,5 +30,6 @@ namespace Store.Data.Interface
         ILoginMonitor LoginMonitors { get; }
         Task<int> Commit();
         void Rollback();
+        IGroup Groups { get; }
     }
 }

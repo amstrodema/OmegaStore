@@ -3,7 +3,7 @@ using AspNetCore.SEOHelper;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using Omega_Store.Service;
+using Omega_Store.Services;
 using Store.Data;
 
 var config = new ConfigurationBuilder()
@@ -125,7 +125,7 @@ else
         {
 
             FileProvider = new PhysicalFileProvider(
-                       "C:\\Users\\ZYNXX\\Documents\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Images"),
+                       "C:\\Users\\USER\\Documents\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Images"),
             RequestPath = "/trig"
         });
 
@@ -133,7 +133,7 @@ else
         {
 
             FileProvider = new PhysicalFileProvider(
-            "C:\\Users\\ZYNXX\\Documents\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Videos"),
+            "C:\\Users\\ZYNXX\\USER\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Videos"),
             RequestPath = "/vids"
         });
 
@@ -141,7 +141,7 @@ else
         {
 
             FileProvider = new PhysicalFileProvider(
-             "C:\\Users\\ZYNXX\\Documents\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Documents"),
+             "C:\\Users\\USER\\Documents\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Documents"),
             RequestPath = "/docs"
         });
     }

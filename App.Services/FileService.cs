@@ -91,7 +91,6 @@ namespace App.Services
                 string folder = Path.Combine(root, "Files");
                 string uniqueFileName = fileName + ".txt";
                 string filePath = Path.Combine(folder, uniqueFileName);
-
                 // Read all lines from the text file into an array
                 var readData = File.ReadAllLines(filePath);
 
