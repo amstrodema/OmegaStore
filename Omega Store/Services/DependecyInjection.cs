@@ -37,6 +37,7 @@ namespace Omega_Store.Services
                 .AddScoped<ITransaction, TransactionRepository>()
                 .AddScoped<ILoginMonitor, LoginMonitorRepository>()
                 .AddScoped<IGroup, GroupRepository>()
+                .AddScoped<IFavourite, FavouriteRepository>()
 
                 .AddScoped<GeneralBusiness>()
                 .AddScoped<GroupBusiness>()

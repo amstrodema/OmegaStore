@@ -1,9 +1,172 @@
-﻿
+﻿/***
+ * 
+                Favourites
+ * 
+ */
+
+CheckFave();
+
+function CheckFave() {
+    try {
+        let faveNo = document.getElementById("faveNo");
+        let faveNo2 = document.getElementById("faveNo2");
+
+        const getFaveData = localStorage.getItem('fave');
+        let fave = [];
 
 
+        if (getFaveData != null) {
+            fave = JSON.parse(getFaveData);
+
+            try {
+                var faveCount = fave.length;
+                faveNo.innerText = faveCount;
+                faveNo2.innerText = faveCount;
+            }
+            catch (e) {
+
+            }
+        }
+    }
+    catch { }
+}
+
+function ToggleFave(itemID) {
+    const retrievedFave = localStorage.getItem('fave');
+    if (retrievedFave == null) {
+        fave = [];
+        fave.push(itemID);
+        const jsonData = JSON.stringify(fave);
+        localStorage.setItem('fave', jsonData);
+    } else {
+        fave = JSON.parse(retrievedFave);
+
+        const index = fave.includes(itemID);
+        //alert(index)
+
+        if (index) {
+            const index = fave.indexOf(itemID);
+            fave.splice(index,1);
+            alertDanger("Removed from Watchlist");
+        } else {
+            alertSuccess("Added to Watchlist");
+            fave.push(itemID);
+        }
+
+        const jsonData = JSON.stringify(fave);
+        localStorage.setItem('fave', jsonData);
+
+    }
+    CheckFave();
+}
+
+/**
+ * 
+ *              CART
+ */
+let cartQtyNo = document.getElementById("cartQtyNo");
+let cartQtyNo2 = document.getElementById("cartQty");
+try {
+   
+
+    const getCartData = localStorage.getItem('cart');
+    let cart = [];
 
 
+    if (getCartData != null) {
+        cart = JSON.parse(getCartData);
+        
+        try {
+            var count = cart.length;
+            cartQtyNo.innerText = count;
+            cartQtyNo2.innerText = count;
+        }
+        catch (e) {
 
+        }
+    }
+}
+catch { }
+
+function AddFromItem(itemID, qtyValID) {
+    let qtyVal = document.getElementById(qtyValID);
+
+    AddToCart(itemID, qtyVal.value);
+}
+
+function AddToCart(itemID, qtyVal, feature) {
+    let itemQty;
+    let quantity;
+
+    try {
+        itemQty = document.getElementById("itemQty");
+        quantity = itemQty.value;
+    } catch (e) {
+        quantity = qtyVal;
+    }
+
+    var data = {};
+    if (feature == undefined) {
+       data = { ID: itemID, Qty: quantity }
+    } else {
+        data = { ID: itemID, Qty: quantity, Feature: feature }
+    }
+    //console.log(data)
+
+    const retrievedData = localStorage.getItem('cart');
+
+    if (retrievedData == null) {
+        cart = [];
+        cart.push(data);
+        const jsonData = JSON.stringify(cart);
+        localStorage.setItem('cart', jsonData);
+    } else {
+        cart = JSON.parse(retrievedData);
+
+        const index = cart.findIndex(o => o.hasOwnProperty("ID") && o["ID"] === data.ID);
+        //alert(index)
+
+        if (index !== -1) {
+            cart[index].Qty = data.Qty;
+        } else {
+            cart.push(data);
+        }
+
+        const jsonData = JSON.stringify(cart);
+        localStorage.setItem('cart', jsonData);
+
+    }
+    alertSuccess("Added to cart");
+    //console.log(cart)
+    try {
+        //cartQtyNo = document.getElementById("cartQtyNo");
+        cartQtyNo.innerText = cart.length;
+        cartQtyNo2.innerText = cart.length;
+    }
+    catch (e) {
+
+    }
+}
+
+function UpdateCartQty(index, inputID, costID, price) {
+    input = document.getElementById(inputID);
+    costLabel = document.getElementById(costID);
+
+    cart[index].Qty = input.value;
+    costLabel.innerText = price * cart[index].Qty;
+
+    const jsonData = JSON.stringify(cart);
+    localStorage.setItem('cart', jsonData);
+
+    loadCartData();
+    alertSuccess("Cart updated");
+}
+
+function ClearCart() {
+    localStorage.clear();
+    loadCartData();
+    alertDanger("Cart cleared!");
+}
 
 function alertSuccess(val) {
     alertThis(val, "success");

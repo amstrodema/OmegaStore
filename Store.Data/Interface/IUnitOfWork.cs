@@ -8,6 +8,7 @@ namespace Store.Data.Interface
 {
     public interface IUnitOfWork
     {
+        IFavourite Favourites { get; }
         IUser Users { get; }
         IOrder Orders { get; }
         ICategory Categories { get; }

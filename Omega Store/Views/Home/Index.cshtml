@@ -112,13 +112,13 @@
         <div class="row px-xl-5">
             @foreach (var item in Model.Featured)
             {
-                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <div class="col-lg-3 col-md-4 col-6 pb-1">
                     <div class="product-item bg-light mb-4">
                         <div class="product-img position-relative overflow-hidden">
                             <img class="img-fluid w-100" src="@item.Image" alt="">
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" onclick="AddToCart('@item.ID','1')"><i class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" onclick="ToggleFave('@item.ID')"><i class="fa fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
                                 <a class="btn btn-outline-dark btn-square" asp-action="item" asp-controller="shop" asp-route-t="@item.Tag"><i class="fa fa-search"></i></a>
                             </div>
@@ -144,6 +144,15 @@
                 </div>
             }
 
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid pt-5 pb-3">
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Featured Products</span></h2>
+        <div class="row">
+            <partial name="_nocontent" />
         </div>
     </div>
 }
@@ -182,13 +191,13 @@
         <div class="row px-xl-5">
             @foreach (var item in Model.Latest)
             {
-                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <div class="col-lg-3 col-md-4 col-6 pb-1">
                     <div class="product-item bg-light mb-4">
                         <div class="product-img position-relative overflow-hidden">
                             <img class="img-fluid w-100" src="@item.Image" alt="">
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" onclick="AddToCart('@item.ID','1')"><i class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" onclick="ToggleFave('@item.ID')"><i class="far fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
                                 <a class="btn btn-outline-dark btn-square" asp-action="item" asp-controller="shop" asp-route-t="@item.Tag"><i class="fa fa-search"></i></a>
                             </div>
@@ -217,7 +226,15 @@
         </div>
     </div>
 }
-
+else
+{
+    <div class="container-fluid pt-5 pb-3">
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Recent Products</span></h2>
+        <div class="row">
+            <partial name="_nocontent" />
+            </div>
+            </div>
+}
 <!-- Recent Products End -->
 <!-- Vendor Start -->
 <div class="container-fluid py-5">

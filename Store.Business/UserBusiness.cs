@@ -53,7 +53,15 @@ namespace Store.Business
                     await _unitOfWork.Users.Create(thisAdmin);
                     await _unitOfWork.Users.Create(user);
                 }
-                var aexxj =  FileService.ReadFromFile("aexxj");
+                else
+                {
+					responseMessage.StatusCode = 201;
+					responseMessage.Message = "Setup Already Completed";
+                    return responseMessage;
+				}
+                _genericBusiness.StoreID = Guid.NewGuid();
+				FileService.WriteToFile(_genericBusiness.StoreID.ToString(), "aexxj");
+				//var aexxj =  FileService.ReadFromFile("aexxj");
 
                 var store = await _unitOfWork.Stores.Find(_genericBusiness.StoreID);
                 if (store == null)
@@ -112,7 +120,7 @@ namespace Store.Business
                 else
                 {
                     responseMessage.StatusCode = 201;
-                    responseMessage.Message = "Setup Completed";
+                    responseMessage.Message = "Setup Already Completed";
                 }
             }
             catch (Exception e)

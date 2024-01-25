@@ -22,15 +22,7 @@ namespace Store.Business
             _genericBusiness = genericBusiness;
 
         }
-        public async Task<MainVM> GetVMForHome()
-        {
-            MainVM mainVM = new MainVM();
-            mainVM.CategoryHybrids = await _categoryBusiness.GetHybrids();
-            mainVM.Featured = AttachImage(await _unitOfWork.Items.GetFeatured(_genericBusiness.StoreID));
-            mainVM.Latest = AttachImage(await _unitOfWork.Items.GetLatest(_genericBusiness.StoreID));
-
-            return mainVM;
-        }
+       
         public IEnumerable<Item> AttachImage(IEnumerable<Item> items)
         {
             //for (int i = 0; i < items.Count(); i++)

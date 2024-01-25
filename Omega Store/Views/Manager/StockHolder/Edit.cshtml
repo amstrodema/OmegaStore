@@ -9,7 +9,7 @@
         <div class="col-12">
             <nav class="breadcrumb bg-light mb-30">
                 <a class="breadcrumb-item text-dark" asp-action="index" asp-controller="manager">Manager</a>
-                <a class="breadcrumb-item text-dark" asp-action="category" asp-controller="manager">Category</a>
+                <a class="breadcrumb-item text-dark" asp-action="stock" id="stockList" asp-controller="manager">Stock</a>
                 <span class="breadcrumb-item active">Modify</span>
             </nav>
         </div>
@@ -35,7 +35,7 @@
                         <select class="form-control mb-2" id="category">
                             @{
                                 var opt = Model.Categories.FirstOrDefault(p => p.ID == Model.Stock.CatID);
-                                <option value="@opt.ID">@opt.Name</option>
+                                                <option value="@opt.ID">@opt.Name</option>
                             }
                             <option value="">- Select A Category -</option>
                             @foreach (var cat in Model.Categories)
@@ -53,10 +53,10 @@
 
                 <section id="sec2" class="hidden">
                     <div class="control-group mb-4 miniTopSpace">
-                        <textarea class="form-control mb-2" id="desc" placeholder="Detailed Item Description" rows="5"></textarea>
+                        <textarea class="form-control mb-2" id="desc" placeholder="Detailed Item Description" rows="5">@Model.Stock.Description</textarea>
 
                         <div class="input-group mb-2">
-                            <select class="btn btn-dark" id="currency">
+                            <select class="btn btn-dark" id="currency">v
                                 <option value="@Model.Stock.Currency">@Model.Stock.Currency</option>
                                 <option value="NGN">NGN</option>
                                 <option value="USD">USD</option>
@@ -103,11 +103,26 @@
                 <section id="sec4" class="hidden">
                     <div class="control-group mb-4 miniTopSpace">
                         <div class="row">
-                            <div class="col-2"><img src="@Model.Stock.Image" style="width:100%" /> </div>
-                            <div class="col-2"><img src="@Model.Stock.Image1" style="width:100%" /> </div>
-                            <div class="col-2"><img src="@Model.Stock.Image2" style="width:100%" /> </div>
-                            <div class="col-2"><img src="@Model.Stock.Image3" style="width:100%" /> </div>
-                            <div class="col-2"><img src="@Model.Stock.Image4" style="width:100%" /> </div>
+                            @if (!string.IsNullOrEmpty(Model.Stock.Image))
+                            {
+                                <div class="col-2 miniImage"><img src="@Model.Stock.Image" style="width:100%" /></div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Stock.Image1))
+                            {
+                                <div class="col-2 miniImage" id="img1Holder"><img src="@Model.Stock.Image1" style="width:100%" /> <i class="fa fa-times" onclick="RemoveImage('1')"></i> </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Stock.Image2))
+                            {
+                                <div class="col-2 miniImage" id="img2Holder"><img src="@Model.Stock.Image2" style="width:100%" /> <i class="fa fa-times" onclick="RemoveImage('2')"></i> </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Stock.Image3))
+                            {
+                                <div class="col-2 miniImage" id="img3Holder"><img src="@Model.Stock.Image3" style="width:100%" /> <i class="fa fa-times" onclick="RemoveImage('3')"></i> </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Stock.Image4))
+                            {
+                                <div class="col-2 miniImage" id="img4Holder"><img src="@Model.Stock.Image4" style="width:100%" /> <i class="fa fa-times" onclick="RemoveImage('4')"></i> </div>
+                            }
                         </div>
                         <p>
                             Uploading various sides and variants of this item will give your customers clearer understanding.
@@ -216,7 +231,7 @@
     }
 
     let dataObj = {
-        ID: "@Model.Stock.ID"
+        ID: "@Model.Stock.ID",
         Title: "",
         Brief: "",
         Desc: "",
@@ -244,34 +259,13 @@
 
     function Add() {
         let feature = {
-            ID: "",
-            Name: "",
-            Option: ""
+            Name: document.getElementById("feature").value,
+            Option: document.getElementById("option").value
         }
-        feature.Name = document.getElementById("feature").value;
-        feature.Option = document.getElementById("option").value;
-
         Append(feature);
     }
 
-    function Append(feature) {
-        alert();
-        var featureHolder = document.getElementById("featureHolder");
-
-        if (feature.Name == "" || feature.Option == "") {
-            alertDanger("Complete Feature Details");
-            return
-        }
-        dataObj.Features.push(feature);
-
-        var str = "";
-        for (i = 0; i < dataObj.Features.length; i++) {
-            str += '<p><b>' + dataObj.Features[i].Name + ':</b> ' + dataObj.Features[i].Option + ' <span class="float-right text-danger btn" onclick="Remove(' + i + ')">x</span></p>'
-        }
-        featureHolder.innerHTML = str;
-        document.getElementById("feature").value = "";
-        document.getElementById("option").value = "";
-    }
+   
 
     function Remove(val) {
         dataObj.Features.splice(val, 1);
@@ -289,6 +283,52 @@
 </script>
 @section scripts {
     <script>
+        function RemoveImage(imgNo) {
+
+                    if(imgNo == 1)
+                    {
+                        var img1Holder = document.getElementById("img1Holder");
+                        img1Holder.innerHTML = "";
+                        dataObj.Img2 = "";
+                    }
+            else if (imgNo == 2) {
+                        var img2Holder = document.getElementById("img2Holder");
+                        img2Holder.innerHTML = "";
+                        dataObj.Img3 = "";
+                    }
+            else if (imgNo == 3) {
+                        var img3Holder = document.getElementById("img3Holder");
+                        img3Holder.innerHTML = "";
+                        dataObj.Img4 = "";
+                    }
+            else if (imgNo == 4) {
+                        var img4Holder = document.getElementById("img4Holder");
+                        img4Holder.innerHTML = "";
+                        dataObj.Img5 = "";
+                    }
+              
+        }
+        function Append(feature) {
+            
+
+            var featureHolder = document.getElementById("featureHolder");
+
+            if (feature.Name == "" || feature.Option == "") {
+                alertDanger("Complete Feature Details");
+                return
+            }
+            dataObj.Features.push(feature);
+
+            var str = "";
+            for (i = 0; i < dataObj.Features.length; i++) {
+                str += '<p><b>' + dataObj.Features[i].Name + ':</b> ' + dataObj.Features[i].Option + ' <span class="float-right text-danger btn" onclick="Remove(' + i + ')">x</span></p>'
+            }
+            featureHolder.innerHTML = str;
+            document.getElementById("feature").value = "";
+            document.getElementById("option").value = "";
+
+        }
+
         function Finish() {
             var finish = document.getElementById("finish");
             var loader = document.getElementById("loader");
@@ -313,10 +353,10 @@
             if (dataObj.Price == "") {
                 dataObj.Price = 0;
             }
-            if ($("#CatImage")[0].files[0] == undefined) {
-                alertDanger("Add default image");
-                return;
-            }
+            // if ($("#CatImage")[0].files[0] == undefined) {
+            //     alertDanger("Add default image");
+            //     return;
+            // }
 
             MoveSection('sec5');
 
@@ -336,11 +376,13 @@
                 processData: false,
                 data: formData,
                 success: function (response) {
-                    location.reload();
-                    alertSuccess("Item saved!")
+                    var a = document.getElementById("stockList");
+                    alertSuccess("Item modified!")
+                    a.click();
+                    // location.reload();
                 },
                 error: function (response) {
-                    alertDanger("Item not saved!");
+                    alertDanger("Item not modified!");
                     MoveSection('sec4');
                 }
 
@@ -358,9 +400,20 @@
                 data: JSON.stringify("@Model.Stock.ID"),
                 contentType: "application/json;",
                 success: function (response) {
-                    for (i = 0; i < response.length; i++) {
-                        Append(response[i]);
+
+                    for (i = 0; i < response.length; i+1) {
+                        // console.log(response[i]);
+                        // console.log(i)
+                        // console.log(response[i])
+                        let feature = {
+                            // ID: response[i].id,
+                            Name: response[i].name,
+                            Option: response[i].option
+                        }
+
+                        Append(feature);
                     }
+
                 },
                 error: function (response) {
                     /*  alert("bad");*/

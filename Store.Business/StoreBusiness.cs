@@ -16,11 +16,13 @@ namespace Store.Business
         private readonly IUnitOfWork _unitOfWork;
         private readonly GenericBusiness _genericBusiness;
         private readonly GeneralBusiness _generalBusiness;
-        public StoreBusiness(IUnitOfWork unitOfWork, GenericBusiness genericBusiness, GeneralBusiness generalBusiness)
+        private readonly CategoryBusiness _categoryBusiness;
+        public StoreBusiness(IUnitOfWork unitOfWork, GenericBusiness genericBusiness, GeneralBusiness generalBusiness, CategoryBusiness categoryBusiness)
         {
             _unitOfWork = unitOfWork;
             _genericBusiness = genericBusiness;
             _generalBusiness = generalBusiness;
+            _categoryBusiness = categoryBusiness;   
         }
         public async Task<IEnumerable<Item>> Get() => await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID);
         public async Task<MainVM> GetVM()
@@ -43,7 +45,7 @@ namespace Store.Business
                 item = await _unitOfWork.Items.GetByTag(t, _genericBusiness.StoreID);
             }
             MainVM mainVM = new MainVM();
-            mainVM.Stock = item;
+            mainVM.Stock = _generalBusiness.AttachImage(item);
             mainVM.Categories = await _unitOfWork.Categories.GetByStoreID(_genericBusiness.StoreID);
             return mainVM;
         }
@@ -142,6 +144,11 @@ namespace Store.Business
                 if (cat == null) { responseMessage.StatusCode = 201; return responseMessage; }
                 if (item == null) { responseMessage.StatusCode = 201; return responseMessage; }
 
+                itemVM.Img2 = string.IsNullOrEmpty(itemVM.Img2) ? "" : item.Image1;
+                itemVM.Img3 = string.IsNullOrEmpty(itemVM.Img2) ? "" : item.Image2;
+                itemVM.Img4 = string.IsNullOrEmpty(itemVM.Img2) ? "" : item.Image3;
+                itemVM.Img5 = string.IsNullOrEmpty(itemVM.Img2) ? "" : item.Image4;
+
                 item.Brief = itemVM.Brief;
                 item.Currency = itemVM.Currency;
                 item.Description = itemVM.Desc;
@@ -154,7 +161,7 @@ namespace Store.Business
                 item.CurrencySymbol = itemVM.Currency == "NGN" ? "₦" : "$";
                 item.GroupID = cat.GroupID;
                 item.DateModified = DateTime.UtcNow.AddHours(1);
-                item.Image = img != null ? await ImageService.SaveImageInFolder(img, item.ID.ToString(), "ItemImage") : itemVM.Img1;
+                item.Image = img != null ? await ImageService.SaveImageInFolder(img, item.ID.ToString(), "ItemImage") : item.Image;
                 item.Image1 = img1 != null ? await ImageService.SaveImageInFolder(img1, item.ID.ToString() + "1", "ItemImage") : itemVM.Img2;
                 item.Image2 = img2 != null ? await ImageService.SaveImageInFolder(img2, item.ID.ToString() + "2", "ItemImage") : itemVM.Img3;
                 item.Image3 = img3 != null ? await ImageService.SaveImageInFolder(img3, item.ID.ToString() + "3", "ItemImage") : itemVM.Img4;
@@ -230,6 +237,98 @@ namespace Store.Business
             mainVM.Stock = item;
             mainVM.Features = await _unitOfWork.Features.GetByItemID(item.ID);
             return mainVM;
+        }
+        public async Task<IEnumerable<OrderVM>> GetCart(OrderVM[] ? orderItems)
+        {
+            if (orderItems == null)
+            {
+                return Enumerable.Empty<OrderVM>();
+            }
+           return from orderItem in orderItems
+                      join item in await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID) on orderItem.ID equals item.ID
+                      select new OrderVM()
+                      {
+                          ID = orderItem.ID,
+                          Image = ImageService.GetSmallImagePath(item.Image, "ItemImage"),
+                          ItemName = item.Title,
+                          Qty = orderItem.Qty,
+                          Features = orderItem.Features,
+                          Price = item.Price,
+                          CurrenySymbol = item.CurrencySymbol,
+                          Tag = item.Tag
+                      };
+        }
+        public async Task<MainVM> GetVMForFave(Guid[] ? faves)
+        {
+            MainVM mainVM = new MainVM();
+
+            try
+            {
+                if (faves == null)
+                {
+                    throw new Exception();
+                }
+
+                mainVM.Favourite = from fave in faves
+                                   join item in await _unitOfWork.Items.GetAll() on fave equals item.ID
+                                   select item;
+
+                mainVM.Favourite = _generalBusiness.AttachImage(mainVM.Favourite);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return mainVM;
+        }
+        public async Task<MainVM> GetVMForHome()
+        {
+            MainVM mainVM = new MainVM();
+            mainVM.CategoryHybrids = await _categoryBusiness.GetHybrids();
+            mainVM.Featured = _generalBusiness.AttachImage(await _unitOfWork.Items.GetFeatured(_genericBusiness.StoreID)).Where(c => c.Currency == GenericBusiness.ShoppingCurrency);
+            mainVM.Latest = _generalBusiness.AttachImage(await _unitOfWork.Items.GetLatest(_genericBusiness.StoreID)).Where(c=> c.Currency == GenericBusiness.ShoppingCurrency);
+
+            return mainVM;
+        }
+        public async Task<MainVM> GetVMForShop()
+        {
+            MainVM mainVM = new MainVM();
+            mainVM.CategoryHybrids = await _categoryBusiness.GetHybrids();
+            mainVM.Stocks = _generalBusiness.AttachImage(await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID)).Where(c => c.Currency == GenericBusiness.ShoppingCurrency);
+            mainVM.Features = await _unitOfWork.Features.GetByStoreID(_genericBusiness.StoreID);
+
+            return mainVM;
+        }
+
+        public async Task<int> MarkAsFave(Guid itemID, Guid userID)
+        {
+            try
+            {
+                var fave = await _unitOfWork.Favourites.GetByUserAndItemID(itemID, userID);
+                if (fave != null)
+                    _unitOfWork.Favourites.Delete(fave);
+                else
+                    await _unitOfWork.Favourites.Create(new Favourite()
+                    {
+                        ID = Guid.NewGuid(),
+                        DateCreated = DateTime.UtcNow.AddHours(1),
+                        StoreID = _genericBusiness.StoreID,
+                        ItemID = itemID,
+                        CreatedBy = userID,
+                        UserID = userID
+                    });
+
+                if (await _unitOfWork.Commit() > 0)
+                {
+                    return 1;
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+            return 0;
         }
     }
 }

@@ -1,13 +1,11 @@
 ﻿namespace Store.Model
 {
-    public class ItemFeature
+    public class Favourite
     {
         public Guid ID { get; set; }
+        public Guid UserID { get; set; }
         public Guid StoreID { get; set; }
-        public Guid OrderID { get; set; }
-        public Guid OrderItemID { get; set; }
-        public string Feature { get; set; } = string.Empty;
-        public string FeatureOption { get; set; } = string.Empty;
+        public Guid ItemID { get; set; }
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }

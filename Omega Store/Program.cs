@@ -133,7 +133,7 @@ else
         {
 
             FileProvider = new PhysicalFileProvider(
-            "C:\\Users\\ZYNXX\\USER\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Videos"),
+            "C:\\Users\\USER\\Projects\\2023\\Omega Store\\Omega Store\\bin\\Debug\\net6.0\\Videos"),
             RequestPath = "/vids"
         });
 

@@ -10,7 +10,7 @@
     <div class="row px-xl-5">
         <div class="col-12">
             <nav class="breadcrumb bg-light mb-30">
-                <a class="breadcrumb-item text-dark" href="#">Home</a>
+                <a class="breadcrumb-item text-dark" asp-action="index" asp-controller="home">Home</a>
                 <span class="breadcrumb-item active">Manager</span>
             </nav>
         </div>
@@ -41,7 +41,7 @@
                             count++;
                             <tr>
                                 <td>@count</td>
-                                <td><a class="text-dark">@item.Title</a></td>
+                                <td><a class="text-dark" asp-action="item" asp-controller="shop" asp-route-t="@item.Tag" >@item.Title</a></td>
                                 <td>@item.DateCreated.ToString("d")</td>
                                 <td><a asp-action="stock" asp-controller="manager" asp-route-s="modify" asp-route-t="@item.Tag"><i class="fa fa-pen text-warning"></i></a></td>
                                 <td><a asp-action="delete" onclick="return(confirm('WARNING!!!\Hide this item from showing.\nDo you want to proceed?'))"><i class="fa fa-times text-danger"></i></a></td>

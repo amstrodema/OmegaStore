@@ -9,21 +9,40 @@ namespace Omega_Store.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly GeneralBusiness _generalBusiness;
+        private readonly StoreBusiness _storeBusiness;
 
-        public HomeController(ILogger<HomeController> logger, GeneralBusiness generalBusiness)
+        public HomeController(ILogger<HomeController> logger, StoreBusiness storeBusiness)
         {
             _logger = logger;
-            _generalBusiness = generalBusiness;
+            _storeBusiness = storeBusiness;
         }
 
         public async Task<IActionResult> Index()
         {
-           var res = await _generalBusiness.GetVMForHome();
+           var res = await _storeBusiness.GetVMForHome();
             return View(res);
         }
-
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        [Route("About")]
+        public IActionResult About()
+        {
+            return View();
+        }
+        [Route("Contact")]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        [Route("Faq")]
+        public IActionResult Faq()
+        {
+            return View();
+        }
+        [Route("Help")]
+        public IActionResult Help()
         {
             return View();
         }

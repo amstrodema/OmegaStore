@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Store.Data.Interface
 {
-    public interface IFeature : IGeneric<Feature>
+    public interface IFavourite : IGeneric<Favourite>
     {
-        Task<IEnumerable<Feature>> GetByItemID(Guid itemID);
-        Task<IEnumerable<Feature>> GetByStoreID(Guid storeID);
+        Task<Favourite> GetByUserAndItemID(Guid itemID, Guid userID);
     }
 }

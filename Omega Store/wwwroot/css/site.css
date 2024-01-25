@@ -177,3 +177,42 @@ body {
 summary{
     list-style:none;
 }
+.miniImage{
+    position: relative;
+}
+    .miniImage i {
+        color: white;
+        position: absolute;
+        background-color: red;
+        padding: 0.26em 0.4em;
+        border-radius: 1em;
+        width: 1.5em;
+        height: 1.4em;
+        cursor:pointer
+    }
+    .miniImage i:hover {
+       background-color:black;
+    }
+    .miniImage i:active {
+       background-color:indianred
+    }
+.blog{
+
+}
+.blog-brief{
+    padding: 1em
+}
+.blog-main{
+    margin-top: 3em
+}
+.blog-img{
+    text-align:center;
+    border-bottom: solid 1px #eee;
+    height: 30em;
+    overflow:hidden
+}
+.blog-img img{
+}
+.blog-img img:hover{
+    height: 105%;
+}

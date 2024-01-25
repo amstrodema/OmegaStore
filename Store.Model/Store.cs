@@ -5,6 +5,8 @@
         public Guid ID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Logo { get; set; } = string.Empty;
+        public string LogoImage { get; set; } = string.Empty;
+        public string Tel { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
@@ -14,6 +16,8 @@
         public string XUrl { get; set; } = string.Empty;
         public string LinkedInUrl { get; set; } = string.Empty;
         public string Brief { get; set; } = string.Empty;
+        public string FooterTag { get; set; } = "GET IN TOUCH";
+        public string FooterDesc { get; set; } = string.Empty;
         public DateTime ExpiryDate { get; set; }
         public bool IsBanned { get; set; }
 

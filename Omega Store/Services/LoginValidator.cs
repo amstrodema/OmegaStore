@@ -12,12 +12,14 @@ namespace Omega_Store.Services
         private readonly IHttpContextAccessor _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly GroupBusiness _groupBusiness;
+        private readonly GenericBusiness _genericBusiness;
 
-        public LoginValidator(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, GroupBusiness groupBusiness)
+        public LoginValidator(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, GroupBusiness groupBusiness, GenericBusiness genericBusiness)
         {
             _context = httpContextAccessor;
             _unitOfWork = unitOfWork;
             _groupBusiness = groupBusiness;
+            _genericBusiness = genericBusiness;
         }
 
         public IHttpContextAccessor Context() { return _context; }
@@ -227,6 +229,18 @@ namespace Omega_Store.Services
             }
         }
 
+        public async Task<Store.Model.Store> GetShop()
+        {
+            return await _unitOfWork.Stores.Find(_genericBusiness.StoreID);
+        }
+        public string GetShoppingCurrency()
+        {
+            return GenericBusiness.ShoppingCurrency;
+        }
+        public string GetShoppingCurrencySymbol()
+        {
+            return GenericBusiness.ShoppingCurrencySymbol;
+        }
         public async Task<IEnumerable<GroupVM>> GetCatList()
         {
             try

@@ -4,6 +4,11 @@
     {
         public Guid ID { get; set; }
         public Guid StoreID { get; set; }
+        public Guid OrderID { get; set; }
+        public Guid ItemID { get; set; }
+        public string ItemName { get; set; } = string.Empty;
+        public decimal Qty { get; set; }
+        public decimal Price { get; set; }
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }

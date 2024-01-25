@@ -470,5 +470,10 @@ namespace Omega_Store.Controllers
             TempData["MessageSuccess"] = "Logged Out Successfully";
             return RedirectToAction("login", "manager");
         }
+
+        public IActionResult Faq()
+        {
+            return View();
+        }
     }
 }

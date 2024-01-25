@@ -11,10 +11,13 @@ namespace Store.Data
             modelBuilder.Entity<Order>().Property(o => o.Amount).HasPrecision(14, 2);
             modelBuilder.Entity<Item>().Property(o => o.Price).HasPrecision(14, 2);
             modelBuilder.Entity<Item>().Property(o => o.OldPrice).HasPrecision(14, 2);
+            modelBuilder.Entity<OrderItem>().Property(o => o.Qty).HasPrecision(14, 2);
+            modelBuilder.Entity<OrderItem>().Property(o => o.Price).HasPrecision(14, 2);
         }
         public virtual DbSet<BillingDetail> BillingDetails { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<Favourite> Favourites { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Feature> Features { get; set; }
         public virtual DbSet<FeatureOption> FeatureOptions { get; set; }

@@ -27,7 +27,7 @@ namespace Store.Model.ViewModel
     }
     public class FeaturePicker
     {
-        public Guid ID { get; set; }
+        //public Guid ID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Option { get; set; } = string.Empty;
     }
