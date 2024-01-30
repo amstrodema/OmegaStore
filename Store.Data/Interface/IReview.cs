@@ -9,5 +9,9 @@ namespace Store.Data.Interface
 {
     public interface IReview : IGeneric<Review>
     {
+        Task<IEnumerable<Review>> GetByItemID(Guid storeID, Guid itemID);
+        Task<Review> GetByItemIDAndUserID(Guid itemID, Guid userID);
+        Task<Review> GetByItemIDAndUserEmail(Guid itemID, string email);
+
     }
 }

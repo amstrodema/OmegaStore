@@ -146,7 +146,9 @@ body {
 .icon-1{
     font-size:5em
 }
-
+.icon-2 {
+    font-size: 3em
+}
 .pointer {
     cursor: pointer !important;
 }

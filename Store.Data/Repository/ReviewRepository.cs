@@ -16,5 +16,17 @@ namespace Store.Data.Repository
         {
 
         }
+        public async Task<IEnumerable<Review>> GetByItemID(Guid storeID, Guid itemID)
+        {
+            return await GetBy(o => o.StoreID == storeID && o.ItemID == itemID);
+        }
+        public async Task<Review> GetByItemIDAndUserID(Guid itemID, Guid userID)
+        {
+            return await GetOneBy(o => o.ItemID == itemID && o.UserID == userID);
+        }
+        public async Task<Review> GetByItemIDAndUserEmail(Guid itemID, string email)
+        {
+            return await GetOneBy(o => o.ItemID == itemID &&  o.Email == email);
+        }
     }
 }

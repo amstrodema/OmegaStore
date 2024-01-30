@@ -4,6 +4,12 @@
     {
         public Guid ID { get; set; }
         public Guid StoreID { get; set; }
+        public Guid ItemID { get; set; }
+        public Guid UserID { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public int Rating { get; set; }
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }

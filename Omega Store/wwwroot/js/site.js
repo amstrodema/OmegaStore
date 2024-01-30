@@ -111,7 +111,7 @@ function AddToCart(itemID, qtyVal, feature) {
     } else {
         data = { ID: itemID, Qty: quantity, Feature: feature }
     }
-    //console.log(data)
+    //console.log(data, "Final Cart Value")
 
     const retrievedData = localStorage.getItem('cart');
 
@@ -126,18 +126,19 @@ function AddToCart(itemID, qtyVal, feature) {
         const index = cart.findIndex(o => o.hasOwnProperty("ID") && o["ID"] === data.ID);
         //alert(index)
 
-        if (index !== -1) {
-            cart[index].Qty = data.Qty;
-        } else {
-            cart.push(data);
-        }
+        //if (index !== -1) {
+        //    cart[index].Qty = data.Qty;
+        //} else {
+        //    cart.push(data);
+        //}
+        cart.push(data);
 
         const jsonData = JSON.stringify(cart);
         localStorage.setItem('cart', jsonData);
 
     }
     alertSuccess("Added to cart");
-    //console.log(cart)
+    console.log(cart)
     try {
         //cartQtyNo = document.getElementById("cartQtyNo");
         cartQtyNo.innerText = cart.length;
@@ -309,6 +310,36 @@ function OTP() {
                 otpBtn.classList.remove("hidden");
                 otpLoader.classList.add("hidden");
                 statMessage.innerText = response.responseText;
+            }
+        });
+
+    } catch (e) {
+
+    }
+}
+
+function SendReview(itemID, message, name, email, rating) {
+    
+    var review = {
+        itemID: itemID,
+        message: message,
+        name: name,
+        email: email,
+        rating: rating
+    }
+    var reviewHolder = document.getElementById("tab-pane-3");
+   
+    try {
+        $.ajax({
+            type: "POST",
+            url: '/shop/addReview',
+            data: JSON.stringify(review),
+            contentType: "application/json;",
+            success: function (response) {
+                reviewHolder.innerHTML = response;
+            },
+            error: function (response) {
+                location.reload()
             }
         });
 

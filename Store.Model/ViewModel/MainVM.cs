@@ -18,11 +18,13 @@ namespace Store.Model.ViewModel
         public IEnumerable<Item> Featured { get; set; }
         public IEnumerable<Item> Favourite { get; set; }
         public IEnumerable<Item> Latest { get; set; }
+        public IEnumerable<Review> Reviews { get; set; }
         public IEnumerable<Group> Groups { get; set; }
         public Order Order { get; set; }
         public Group Group { get; set; }
         public Item Stock { get; set; }
         public Category Category { get; set; }
         public int FaveCount { get; set; }
+        public int Ratings { get; set; }
     }
 }

@@ -471,9 +471,49 @@ namespace Omega_Store.Controllers
             return RedirectToAction("login", "manager");
         }
 
-        public IActionResult Faq()
+        public async Task<IActionResult> Faq()
         {
             return View();
+        }
+        public async Task<IActionResult> Analytics()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Customers()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Reviews()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Settings()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Transactions()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Offers()
+        {
+            return View("offerholder/index");
+        }
+        public async Task<IActionResult> Mails()
+        {
+            return View("mailholder/index");
+        }
+        public async Task<IActionResult> Blog()
+        {
+            return View("blogholder/index");
+        }
+        public async Task<IActionResult> AdIntegrations()
+        {
+            return View("AdsIntegrationHolder/index");
+        }
+        public async Task<IActionResult> HomepageManager()
+        {
+            return View("HomePageHolder/index");
         }
     }
 }

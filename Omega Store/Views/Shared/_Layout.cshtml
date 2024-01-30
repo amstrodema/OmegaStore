@@ -291,7 +291,11 @@
                                 </div>
                             </div>
                         </form>
-                        <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
+                        
+                        @if (!string.IsNullOrEmpty(@store.XUrl) || !string.IsNullOrEmpty(@store.FacebookUrl) || !string.IsNullOrEmpty(@store.LinkedInUrl) || !string.IsNullOrEmpty(@store.InstagramUrl))
+                        {
+                            <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
+                        }
                         <div class="d-flex">
                             @if (!string.IsNullOrEmpty(@store.XUrl))
                             {

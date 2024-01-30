@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Omega_Store.Services;
 using Store.Business;
 using Store.Data.Interface;
 using Store.Model;
@@ -11,10 +12,12 @@ namespace Omega_Store.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly StoreBusiness _storeBusiness;
-        public ShopController(IUnitOfWork unitOfWork, StoreBusiness storeBusiness)
+        private readonly LoginValidator _loginValidator;
+        public ShopController(IUnitOfWork unitOfWork, StoreBusiness storeBusiness, LoginValidator loginValidator)
         {
             _unitOfWork = unitOfWork;
             _storeBusiness = storeBusiness;
+            _loginValidator = loginValidator;
         }
         [Route("Shop")]
         public async Task<IActionResult> Index(string d)
@@ -63,12 +66,34 @@ namespace Omega_Store.Controllers
         //}
         public async Task<IActionResult> Item(string t)
         {
+            if (string.IsNullOrEmpty(t))
+            {
+                return RedirectToAction("Index");
+            }
             var res = await _storeBusiness.GetItem(t);
             return View(res);
         }
         public IActionResult Cart()
         {
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddReview([FromBody] Review review)
+        {
+            try
+            {
+                var userID = _loginValidator.GetUserID();
+                //var review = JsonConvert.DeserializeObject<Review>(reviewJSON);
+                //if (review == null)
+                //{
+                //    throw new Exception();
+                //}
+                return PartialView("_review", await _storeBusiness.AddReview(review, userID));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
         [HttpPost]
         public async Task<IActionResult> GetCart([FromBody] string orders)

@@ -236,6 +236,9 @@ namespace Store.Business
             MainVM mainVM = new MainVM();
             mainVM.Stock = item;
             mainVM.Features = await _unitOfWork.Features.GetByItemID(item.ID);
+            mainVM.Reviews = await _unitOfWork.Reviews.GetByItemID(_genericBusiness.StoreID, item.ID);
+            var traffic = mainVM.Reviews.Count() < 10 ? 10 : mainVM.Reviews.Count();
+            mainVM.Ratings = mainVM.Reviews.Sum(p => p.Rating) / traffic;
             return mainVM;
         }
         public async Task<IEnumerable<OrderVM>> GetCart(OrderVM[] ? orderItems)
@@ -301,6 +304,45 @@ namespace Store.Business
             return mainVM;
         }
 
+        public async Task<MainVM> AddReview(Review review, Guid userID)
+        {
+            MainVM mainVM = new MainVM();
+            try
+            {
+                review.ID = Guid.NewGuid();
+                review.CreatedBy = userID;
+                review.UserID = userID;
+                review.StoreID = _genericBusiness.StoreID;
+                review.DateCreated = DateTime.UtcNow.AddHours(1);
+                review.Email = string.IsNullOrEmpty(review.Email) ? string.Empty : review.Email;
+                review.Name = string.IsNullOrEmpty(review.Name) ? string.Empty : review.Name;
+
+                var oldReview = await _unitOfWork.Reviews.GetByItemIDAndUserID(review.ItemID, userID);
+
+                if (userID == default)
+                {
+                    oldReview = await _unitOfWork.Reviews.GetByItemIDAndUserEmail(review.ItemID, review.Email);
+                }
+
+                if (oldReview != null)
+                {
+                    _unitOfWork.Reviews.Delete(oldReview);
+                }
+
+                await _unitOfWork.Reviews.Create(review);
+                await _unitOfWork.Commit();
+
+            }
+            catch (Exception)
+            {
+            }
+
+            mainVM.Reviews = await _unitOfWork.Reviews.GetByItemID(_genericBusiness.StoreID, review.ItemID);
+            var traffic = mainVM.Reviews.Count() < 10 ? 10 : mainVM.Reviews.Count();
+            mainVM.Ratings = mainVM.Reviews.Sum(p => p.Rating) / traffic;
+
+            return mainVM;
+        }
         public async Task<int> MarkAsFave(Guid itemID, Guid userID)
         {
             try
