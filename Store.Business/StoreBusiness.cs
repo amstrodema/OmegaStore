@@ -133,6 +133,41 @@ namespace Store.Business
             }
             return responseMessage;
         }
+        public async Task<MainVM> GetFromCategory(string t)
+        {
+            MainVM mainVM = new MainVM();
+            try
+            {
+                var cat = await _unitOfWork.Categories.GetByCategoryTag(t, _genericBusiness.StoreID);
+                mainVM.Category = cat;
+                mainVM.Stocks = from item in await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID)
+                                where item.CatID == cat.ID && item.IsActive && item.Currency == GenericBusiness.ShoppingCurrency
+                                join review in await _unitOfWork.Reviews.GetAll() on item.ID equals review.ItemID into reviews
+                                select new Item()
+                                {
+                                    CatID = item.CatID,
+                                    Tag = item.Tag,
+                                    Image = ImageService.GetLargeImagePath(item.Image, "ItemImage"),
+                                    Currency = item.Currency,
+                                    CurrencySymbol = item.CurrencySymbol,
+                                    Title = item.Title,
+                                    OldPrice = item.OldPrice,
+                                    Price = item.Price,
+                                    ID = item.ID,
+                                    Rating = reviews.Sum(p => p.Rating) / (reviews.Count() < 10 ? 10 : reviews.Count()),
+                                    IsRecent = item.IsRecent,
+                                    IsFeatured = item.IsFeatured,
+                                    Reviews = reviews.Count()
+                                };
+                mainVM.CategoryHybrids = await _categoryBusiness.GetHybrids();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return mainVM;
+        }
         public async Task<ResponseMessage<string>> Modify(ItemVM itemVM, User user, IFormFile img, IFormFile img1, IFormFile img2, IFormFile img3, IFormFile img4)
         {
             ResponseMessage<string> responseMessage = new ResponseMessage<string>();
@@ -236,18 +271,29 @@ namespace Store.Business
             MainVM mainVM = new MainVM();
             mainVM.Stock = item;
             mainVM.Features = await _unitOfWork.Features.GetByItemID(item.ID);
-            mainVM.Reviews = await _unitOfWork.Reviews.GetByItemID(_genericBusiness.StoreID, item.ID);
+            mainVM.Reviews =(from review in await _unitOfWork.Reviews.GetByItemID(_genericBusiness.StoreID, item.ID)
+                            join user in await _unitOfWork.Users.GetAll() on review.UserID equals user.ID into users
+                            from thisUser in users.DefaultIfEmpty()
+                            select new Review()
+                            {
+                                ID = review.ID,
+                                Name = review.UserID != default ? thisUser.Username : review.Name,
+                                Message = review.Message,
+                                DateCreated = review.DateCreated,
+                                Rating = review.Rating
+                            }).OrderByDescending(o=> o.DateCreated);
             var traffic = mainVM.Reviews.Count() < 10 ? 10 : mainVM.Reviews.Count();
             mainVM.Ratings = mainVM.Reviews.Sum(p => p.Rating) / traffic;
             return mainVM;
         }
-        public async Task<IEnumerable<OrderVM>> GetCart(OrderVM[] ? orderItems)
+        public async Task<CheckOutVM> GetCart(OrderVM[] ? orderItems)
         {
+            CheckOutVM checkOutVM = new CheckOutVM();
             if (orderItems == null)
             {
-                return Enumerable.Empty<OrderVM>();
+                return checkOutVM;
             }
-           return from orderItem in orderItems
+           var orders = from orderItem in orderItems
                       join item in await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID) on orderItem.ID equals item.ID
                       select new OrderVM()
                       {
@@ -260,6 +306,8 @@ namespace Store.Business
                           CurrenySymbol = item.CurrencySymbol,
                           Tag = item.Tag
                       };
+            checkOutVM.Orders = orders;
+            return checkOutVM;
         }
         public async Task<MainVM> GetVMForFave(Guid[] ? faves)
         {
@@ -272,9 +320,25 @@ namespace Store.Business
                     throw new Exception();
                 }
 
-                mainVM.Favourite = from fave in faves
-                                   join item in await _unitOfWork.Items.GetAll() on fave equals item.ID
-                                   select item;
+                mainVM.Favourite = (from fave in faves
+                                   join item in await _unitOfWork.Items.GetByStoreIDAndCurrency(_genericBusiness.StoreID, GenericBusiness.ShoppingCurrency) on fave equals item.ID
+                                   join review in await _unitOfWork.Reviews.GetAll() on item.ID equals review.ItemID into reviews
+                                   select new Item()
+                                   {
+                                       CatID = item.CatID,
+                                       Tag = item.Tag,
+                                       Image = ImageService.GetLargeImagePath(item.Image, "ItemImage"),
+                                       Currency = item.Currency,
+                                       CurrencySymbol = item.CurrencySymbol,
+                                       Title = item.Title,
+                                       OldPrice = item.OldPrice,
+                                       Price = item.Price,
+                                       ID = item.ID,
+                                       Rating = reviews.Sum(p => p.Rating) / (reviews.Count() < 10 ? 10 : reviews.Count()),
+                                       IsRecent = item.IsRecent,
+                                       IsFeatured = item.IsFeatured,
+                                       Reviews = reviews.Count()
+                                   }).OrderByDescending(o=> o.DateCreated);
 
                 mainVM.Favourite = _generalBusiness.AttachImage(mainVM.Favourite);
             }
@@ -289,8 +353,85 @@ namespace Store.Business
         {
             MainVM mainVM = new MainVM();
             mainVM.CategoryHybrids = await _categoryBusiness.GetHybrids();
-            mainVM.Featured = _generalBusiness.AttachImage(await _unitOfWork.Items.GetFeatured(_genericBusiness.StoreID)).Where(c => c.Currency == GenericBusiness.ShoppingCurrency);
-            mainVM.Latest = _generalBusiness.AttachImage(await _unitOfWork.Items.GetLatest(_genericBusiness.StoreID)).Where(c=> c.Currency == GenericBusiness.ShoppingCurrency);
+            mainVM.Featured = from item in await _unitOfWork.Items.GetFeatured(_genericBusiness.StoreID)
+                              where item.Currency == GenericBusiness.ShoppingCurrency
+                              join review in await _unitOfWork.Reviews.GetAll() on item.ID equals review.ItemID into reviews
+                              select new Item()
+                              {
+                                  CatID = item.CatID,
+                                  Tag = item.Tag,
+                                  Image = ImageService.GetLargeImagePath(item.Image, "ItemImage"),
+                                  Currency = item.Currency,
+                                  CurrencySymbol = item.CurrencySymbol,
+                                  Title = item.Title,
+                                  OldPrice = item.OldPrice,
+                                  Price = item.Price,
+                                  ID = item.ID,
+                                  Rating = reviews.Sum(p => p.Rating) / (reviews.Count() < 10 ? 10 : reviews.Count()),
+                                  IsRecent = item.IsRecent,
+                                  IsFeatured = item.IsFeatured,
+                                  Reviews = reviews.Count()
+                              };
+
+            mainVM.Latest = from item in await _unitOfWork.Items.GetLatest(_genericBusiness.StoreID)
+                            where item.Currency == GenericBusiness.ShoppingCurrency
+                            join review in await _unitOfWork.Reviews.GetAll() on item.ID equals review.ItemID into reviews
+                            select new Item()
+                            {
+                                CatID = item.CatID,
+                                Tag = item.Tag,
+                                Image = ImageService.GetLargeImagePath(item.Image, "ItemImage"),
+                                Currency = item.Currency,
+                                CurrencySymbol = item.CurrencySymbol,
+                                Title = item.Title,
+                                OldPrice = item.OldPrice,
+                                Price = item.Price,
+                                ID = item.ID,
+                                Rating = reviews.Sum(p => p.Rating) / (reviews.Count() < 10 ? 10 : reviews.Count()),
+                                IsRecent = item.IsRecent,
+                                IsFeatured = item.IsFeatured,
+                                Reviews = reviews.Count()
+                            };
+
+            mainVM.Slides = from slide in await _unitOfWork.Slides.GetAll()
+                            where slide.StoreID == _genericBusiness.StoreID
+                            select new Slide()
+                            {
+                                ID = slide.ID,
+                                Caption = slide.Caption,
+                                StoreID = slide.StoreID,
+                                Action = slide.Action,
+                                Desc = slide.Desc,
+                                Image = ImageService.GetLargeImagePath(slide.Image, "Slide"),
+                                Link = slide.Link
+                            };
+
+            mainVM.Brands = from brand in await _unitOfWork.Brands.GetAll()
+                            where brand.StoreID == _genericBusiness.StoreID
+                            select new Brand()
+                            {
+                                ID = brand.ID,
+                                Tag = brand.Tag,
+                                Logo = ImageService.GetLargeImagePath(brand.Logo,"Brand")
+                            };
+            var offers = await _unitOfWork.Offers.GetAll();
+            mainVM.Offers = (from offer in offers
+                             where offer.StoreID == _genericBusiness.StoreID && offer.IsActive && offer.IsHomepage && !offer.IsAdmin
+                             select new Offer()
+                             {
+                                 ID = offer.ID,
+                                 Caption = offer.Caption,
+                                 DiscountCaption = offer.DiscountCaption,
+                                 StoreID = offer.StoreID,
+                                 Action = offer.Action,
+                                 Description = offer.Description,
+                                 Tag = offer.Tag,
+                                 Image = ImageService.GetLargeImagePath(offer.Image, "Offer"),
+                                 Link = offer.Link,
+                                 DateCreated = offer.DateCreated
+                             }).Take(3).ToList();
+
+            mainVM.Offer = offers.FirstOrDefault(p => p.IsActive && p.IsAdmin);
 
             return mainVM;
         }
@@ -298,7 +439,26 @@ namespace Store.Business
         {
             MainVM mainVM = new MainVM();
             mainVM.CategoryHybrids = await _categoryBusiness.GetHybrids();
-            mainVM.Stocks = _generalBusiness.AttachImage(await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID)).Where(c => c.Currency == GenericBusiness.ShoppingCurrency);
+            mainVM.Stocks = (from item in await _unitOfWork.Items.GetByStoreID(_genericBusiness.StoreID)
+                              where item.Currency == GenericBusiness.ShoppingCurrency
+                              join review in await _unitOfWork.Reviews.GetAll() on item.ID equals review.ItemID into reviews
+                              select new Item()
+                              {
+                                  CatID = item.CatID,
+                                  Tag = item.Tag,
+                                  Image = ImageService.GetLargeImagePath(item.Image, "ItemImage"),
+                                  Currency = item.Currency,
+                                  CurrencySymbol = item.CurrencySymbol,
+                                  Title = item.Title,
+                                  OldPrice = item.OldPrice,
+                                  Price = item.Price,
+                                  ID = item.ID,
+                                  Rating = reviews.Sum(p => p.Rating) / (reviews.Count() < 10 ? 10 : reviews.Count()),
+                                  IsRecent = item.IsRecent,
+                                  IsFeatured = item.IsFeatured,
+                                  Reviews = reviews.Count(),
+                                  DateCreated = item.DateCreated
+                              }).OrderByDescending(o=> o.DateCreated);
             mainVM.Features = await _unitOfWork.Features.GetByStoreID(_genericBusiness.StoreID);
 
             return mainVM;
@@ -323,6 +483,11 @@ namespace Store.Business
                 {
                     oldReview = await _unitOfWork.Reviews.GetByItemIDAndUserEmail(review.ItemID, review.Email);
                 }
+                else
+                {
+                    var user = await _unitOfWork.Users.Find(userID);
+                    review.Name = user.Fname;
+                }
 
                 if (oldReview != null)
                 {
@@ -337,7 +502,17 @@ namespace Store.Business
             {
             }
 
-            mainVM.Reviews = await _unitOfWork.Reviews.GetByItemID(_genericBusiness.StoreID, review.ItemID);
+            mainVM.Reviews = (from thisReview in await _unitOfWork.Reviews.GetByItemID(_genericBusiness.StoreID, review.ItemID)
+                             join user in await _unitOfWork.Users.GetAll() on thisReview.UserID equals user.ID into users
+                             from thisUser in users.DefaultIfEmpty()
+                             select new Review()
+                             {
+                                 ID = thisReview.ID,
+                                 Name = thisReview.UserID != default ? thisUser.Username : thisReview.Name,
+                                 Message = thisReview.Message,
+                                 DateCreated = thisReview.DateCreated,
+                                 Rating = thisReview.Rating
+                             }).OrderByDescending(p=> p.DateCreated);
             var traffic = mainVM.Reviews.Count() < 10 ? 10 : mainVM.Reviews.Count();
             mainVM.Ratings = mainVM.Reviews.Sum(p => p.Rating) / traffic;
 
@@ -371,6 +546,13 @@ namespace Store.Business
                 return 0;
             }
             return 0;
+        }
+
+        public async Task<ResponseMessage<string>> CheckOut(Guid itemID, Guid userID)
+        {
+            ResponseMessage<string> responseMessage = new ResponseMessage<string>();
+
+            return responseMessage;
         }
     }
 }

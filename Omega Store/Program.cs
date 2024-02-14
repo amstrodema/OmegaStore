@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Omega_Store.Services;
 using Store.Data;
+using System.Configuration;
 
 var config = new ConfigurationBuilder()
              .SetBasePath(Directory.GetCurrentDirectory())
@@ -35,9 +36,28 @@ catch (Exception)
     connectionString = "";
 }
 
+//builder.Services.AddDbContext<OmegaContext>(
+//             o => o.UseSqlServer(connectionString)
+//              );
+
+var roota = AppDomain.CurrentDomain;
+var root = roota.BaseDirectory;
+string folder = Path.Combine(root, "Files");
+string sqlitePath = Path.Combine(folder, "omegaDBMain.db");
+string sqliteConnect = $"Data Source={sqlitePath}";
+
+List<string> readData = new List<string>();
+if (!(Directory.Exists(folder)))
+{
+    Directory.CreateDirectory(folder);
+}
+else
+{
+}
+
 builder.Services.AddDbContext<OmegaContext>(
-             o => o.UseSqlServer(connectionString)
-              );
+  o => o.UseSqlite(sqliteConnect)
+   );
 builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 builder.Services.AddDirectoryBrowser();

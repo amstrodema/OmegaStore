@@ -20,6 +20,7 @@
         public string FooterDesc { get; set; } = string.Empty;
         public DateTime ExpiryDate { get; set; }
         public bool IsBanned { get; set; }
+        public int Level { get; set; } = 0;
 
         public bool IsApproved { get; set; }
         public bool IsActive { get; set; }

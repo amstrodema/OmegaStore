@@ -29,6 +29,11 @@ namespace Omega_Store.Services
             _context.HttpContext.Session.SetString(key, json);
         }
 
+        public string? GetSession(string key)
+        {
+           return _context.HttpContext.Session.GetString(key);
+        }
+
         public async Task<bool> IsLoggedInAuth()
         {
             try

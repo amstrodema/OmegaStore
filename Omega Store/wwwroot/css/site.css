@@ -218,3 +218,10 @@ summary{
 .blog-img img:hover{
     height: 105%;
 }
+.text-black{
+    color: black;
+}
+.py-4{
+    overflow:hidden;
+    border: solid white
+}

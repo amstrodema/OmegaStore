@@ -38,6 +38,9 @@ namespace Omega_Store.Services
                 .AddScoped<ILoginMonitor, LoginMonitorRepository>()
                 .AddScoped<IGroup, GroupRepository>()
                 .AddScoped<IFavourite, FavouriteRepository>()
+                .AddScoped<IOffer, OfferRepository>()
+                .AddScoped<IBrand, BrandRepository>()
+                .AddScoped<ISlide, SlideRepository>()
 
                 .AddScoped<GeneralBusiness>()
                 .AddScoped<GroupBusiness>()
@@ -60,6 +63,9 @@ namespace Omega_Store.Services
                 .AddScoped<TrackingBusiness>()
                 .AddScoped<TransactionBusiness>()
                 .AddScoped<UserBusiness>()
+                .AddScoped<OfferBusiness>()
+                .AddScoped<SlideBusiness>()
+                .AddScoped<BrandBusiness>()
                 ;
         }
 

@@ -3,7 +3,7 @@
     @foreach (var cat in Model.CategoryHybrids)
     {
         <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <a class="text-decoration-none" asp-action="" asp-controller="" asp-route-t="@cat.Tag">
+            <a class="text-decoration-none" asp-action="category" asp-controller="shop" asp-route-t="@cat.Tag">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden" style="width: 100px; height: 100px;">
                         <img class="img-fluid" src="@cat.Image" alt="">

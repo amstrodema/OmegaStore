@@ -20,10 +20,16 @@ namespace Store.Model.ViewModel
         public IEnumerable<Item> Latest { get; set; }
         public IEnumerable<Review> Reviews { get; set; }
         public IEnumerable<Group> Groups { get; set; }
+        public IEnumerable<Slide> Slides { get; set; }
+        public IEnumerable<Brand> Brands { get; set; }
+        public List<Offer> Offers { get; set; }
         public Order Order { get; set; }
         public Group Group { get; set; }
         public Item Stock { get; set; }
         public Category Category { get; set; }
+        public Offer? Offer { get; set; }
+        //public Offer? Offer3 { get; set; }
+        //public Offer? Offer4 { get; set; }
         public int FaveCount { get; set; }
         public int Ratings { get; set; }
     }

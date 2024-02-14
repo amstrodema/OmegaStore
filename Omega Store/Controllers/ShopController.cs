@@ -56,9 +56,21 @@ namespace Omega_Store.Controllers
             var res = await _storeBusiness.GetVMForShop();
             return View(res);
         }
-        public IActionResult Category()
+        public async Task<IActionResult> Category(string t)
         {
-            return View();
+            try
+            {
+                if (string.IsNullOrEmpty(t))
+                {
+                    return RedirectToAction("Index");
+                }
+                var res = await _storeBusiness.GetFromCategory(t);
+                return View(res);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Index");
+            }
         }
         //public IActionResult Tracking()
         //{
@@ -102,11 +114,50 @@ namespace Omega_Store.Controllers
             {
                 var orderVM = JsonConvert.DeserializeObject<OrderVM[]>(orders);
                 var res = await _storeBusiness.GetCart(orderVM);
-                if (res.Count() < 1)
+                if (res.Orders.Count() < 1)
                 {
                     return PartialView("_nocontent");
                 }
-                return PartialView("_cart", res);
+                return PartialView("_cart", res.Orders);
+            }
+            catch (Exception)
+            {
+                return PartialView("_nocontent");
+            }
+        }
+        public async Task<IActionResult> Confirmation()
+        {
+            try
+            {
+                if (TempData["CheckOutCart"].ToString() == "Confirmed")
+                {
+                    return View();
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckOutCart(CheckOutVM checkOutVM)
+        {
+            TempData["CheckOutCart"] = "Confirmed";
+            return RedirectToAction("Confirmation");
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetCheckOut([FromBody] string orders)
+        {
+            try
+            {
+                var orderVM = JsonConvert.DeserializeObject<OrderVM[]>(orders);
+                var res = await _storeBusiness.GetCart(orderVM);
+                if (res.Orders.Count() < 1)
+                {
+                    return PartialView("_nocontent");
+                }
+                _loginValidator.SetSession("cartHolder", orders);
+                return PartialView("_checkout", res);
             }
             catch (Exception)
             {

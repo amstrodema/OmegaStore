@@ -32,5 +32,9 @@ namespace Store.Data.Interface
         Task<int> Commit();
         void Rollback();
         IGroup Groups { get; }
+
+        IBrand Brands { get; }
+        IOffer Offers { get; }
+        ISlide Slides { get; }
     }
 }

@@ -60,14 +60,20 @@ namespace Store.Business
                     return responseMessage;
 				}
                 _genericBusiness.StoreID = Guid.NewGuid();
+                try
+                {
+                    FileService.DeleteFile("aexxj");
+                }
+                catch (Exception)
+                {
+
+                }
 				FileService.WriteToFile(_genericBusiness.StoreID.ToString(), "aexxj");
 				//var aexxj =  FileService.ReadFromFile("aexxj");
 
                 var store = await _unitOfWork.Stores.Find(_genericBusiness.StoreID);
                 if (store == null)
                 {
-
-
                     store = new Model.Store()
                     {
                         ID = _genericBusiness.StoreID,

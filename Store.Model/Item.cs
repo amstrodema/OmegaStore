@@ -4,6 +4,7 @@
     {
         public Guid ID { get; set; }
         public Guid StoreID { get; set; }
+        public Guid OfferID { get; set; }
         public Guid CatID { get; set; }
         public Guid GroupID { get; set; }
         public string Title { get; set; } = string.Empty;
@@ -19,6 +20,8 @@
         public string Brief { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public decimal OldPrice { get; set; }
+        public int Rating { get; set; }
+        public int Reviews { get; set; }
 
         public bool IsRecent { get; set; }
         public bool IsFeatured { get; set; }

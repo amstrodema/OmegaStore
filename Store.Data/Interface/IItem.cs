@@ -14,5 +14,7 @@ namespace Store.Data.Interface
         Task<Item> GetByTag(string tag, Guid storeID);
         Task<IEnumerable<Item>> GetFeatured(Guid storeID);
         Task<IEnumerable<Item>> GetLatest(Guid storeID);
+        Task<Item> GetByOfferID(Guid offerID);
+        Task<IEnumerable<Item>> GetByStoreIDAndCurrency(Guid storeID, string currency);
     }
 }

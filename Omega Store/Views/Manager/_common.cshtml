@@ -1,4 +1,8 @@
-﻿
+﻿@using Omega_Store.Services
+@inject LoginValidator loginValidator
+@{
+    var thisShop =  await loginValidator.GetShop();
+}
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -21,13 +25,13 @@
         <div class="col-lg-5">
             <div class="bg-light pad-slim p-30 mb-3 row">
                 <div class="col-4 vertical-center">
-                    <i class="fa fa-chart icon-1 text-danger"></i>
+                    <i class="fa fa-bolt icon-1 text-danger"></i>
                 </div>
                 <div class="col-8">
                     @*<h2>6500</h2>*@
                     <h5 class="bold text-danger">Analytics</h5>
-                    <p>Total number of traffic on all pages of your store</p>
-                    <a class="text-danger" asp-action="traffic" asp-controller="manager">View Traffic Insight <i class="fa fa-long-arrow"></i></a>
+                    <p>Traffic and other analytical metrics on specific pages of your store</p>
+                    <a class="text-danger" asp-action="traffic" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">View Traffic Insight <i class="fa fa-long-arrow"></i></a>
                 </div>
             </div>
             <div class="bg-light pad-slim p-30 mb-3 row">
@@ -37,8 +41,8 @@
                 <div class="col-8">
                     @*<h2>6500</h2>*@
                     <h5 class="bold text-info">Settings </h5>
-                    <p>Modify specifics of your store</p>
-                    <a class="text-info" asp-action="traffic" asp-controller="manager">Modify Store Settings <i class="fa fa-long-arrow-right"></i></a>
+                    <p>Behaviour and other specifics of your store</p>
+                    <a class="text-info" asp-action="traffic" asp-controller="manager">View Store Settings <i class="fa fa-long-arrow-right"></i></a>
                 </div>
             </div>
          
@@ -46,28 +50,14 @@
         <div class="col-lg-7">
             <div class="row">
                 <div class="col-6 col-md-6 col-sm-6 pb-1">
-                    <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
-                        <div class="cat-item d-flex align-items-center mb-4">
-                            <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
-                                <i class="fa fa-database icon-2 text-info"></i>
-                            </div>
-                            <div class="flex-fill pl-3">
-                                <h6>Stock Manager</h6>
-                                <small class="text-body">100 Items</small>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-6 col-md-6 col-sm-6 pb-1">
-                    <a class="text-decoration-none" asp-action="order" asp-controller="manager">
+                    <a class="text-decoration-none" asp-action="group" asp-controller="manager">
                         <div class="cat-item img-zoom d-flex align-items-center mb-4">
                             <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
-                                <i class="fa fa-shopping-cart icon-2 text-warning"></i>
+                                <i class="fa fa-folder icon-2 text-info"></i>
                             </div>
                             <div class="flex-fill pl-3">
-                                <h6>Order Manager</h6>
-                                <small class="text-body">100 Orders</small>
+                                <h6>Group Manager</h6>
+                                <small class="text-body">100 Groups</small>
                             </div>
                         </div>
                     </a>
@@ -86,18 +76,34 @@
                     </a>
                 </div>
                 <div class="col-6 col-md-6 col-sm-6 pb-1">
-                    <a class="text-decoration-none" asp-action="group" asp-controller="manager">
-                        <div class="cat-item img-zoom d-flex align-items-center mb-4">
+                    <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+                        <div class="cat-item d-flex align-items-center mb-4">
                             <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
-                                <i class="fa fa-folder icon-2 text-info"></i>
+                                <i class="fa fa-database icon-2 text-warning"></i>
                             </div>
                             <div class="flex-fill pl-3">
-                                <h6>Group Manager</h6>
-                                <small class="text-body">100 Groups</small>
+                                <h6>Stock Manager</h6>
+                                <small class="text-body">100 Items</small>
                             </div>
                         </div>
                     </a>
                 </div>
+
+                <div class="col-6 col-md-6 col-sm-6 pb-1">
+                    <a class="text-decoration-none" asp-action="order" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
+                        <div class="cat-item img-zoom d-flex align-items-center mb-4">
+                            <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
+                                <i class="fa fa-shopping-cart icon-2 text-info"></i>
+                            </div>
+                            <div class="flex-fill pl-3">
+                                <h6>Order Manager</h6>
+                                <small class="text-body">100 Orders</small>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+               
+               
                 <div class="col-12 pb-1">
                     <a class="text-decoration-none" asp-action="category" asp-controller="manager">
                         <div class="cat-item img-zoom d-flex align-items-center mb-4">
@@ -119,7 +125,7 @@
        <hr />
     <div class="row px-xl-5">
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="stock" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-comments icon-2 text-primary"></i>
@@ -132,7 +138,7 @@
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="stock" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-envelope icon-2 text-info"></i>
@@ -145,7 +151,7 @@
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="stock" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-rss icon-2  text-info"></i>
@@ -158,7 +164,7 @@
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="stock" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-plug icon-2 text-danger"></i>
@@ -171,7 +177,7 @@
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="stock" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-book icon-2 text-danger"></i>
@@ -184,7 +190,7 @@
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="stock" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-users icon-2 text-warning"></i>
@@ -197,20 +203,20 @@
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="slides" asp-controller="manager">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-home icon-2 text-warning"></i>
                     </div>
                     <div class="flex-fill pl-3">
-                        <h6>Homepage Manager</h6>
+                        <h6>Slide Manager</h6>
                         <small class="text-body">100 Items</small>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-6 col-md-3 col-sm-4 pb-1">
-            <a class="text-decoration-none" asp-action="stock" asp-controller="manager">
+            <a class="text-decoration-none" asp-action="offers" asp-controller="manager" onclick="return CheckStore(@thisShop.Level, 1)">
                 <div class="cat-item d-flex align-items-center mb-4">
                     <div class="overflow-hidden vertical-center" style="width: 100px; height: 100px;">
                         <i class="fa fa-tag icon-2 text-info"></i>

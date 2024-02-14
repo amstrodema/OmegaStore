@@ -123,7 +123,7 @@
                     </div>
                 </form>
             </div>
-            @if (!string.IsNullOrEmpty(store.Tel))
+            @if (store != null && !string.IsNullOrEmpty(store.Tel))
             {
                 <div class="col-lg-4 col-6 text-right">
                     <p class="m-0">Customer Service</p>
@@ -157,7 +157,7 @@
                                                 <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
                                                     @foreach (var cat in grp.Categories)
                                                 {
-                                                        <a href="" class="nav-item nav-link nowrap">@cat.Name</a>
+                                                    <a asp-action="category" asp-controller="shop" asp-route-t="@cat.Tag" class="nav-item nav-link nowrap">@cat.Name</a>
                                                 }
                                                 </div>
                                             </div>
@@ -167,7 +167,7 @@
                                 {
                                     foreach (var cat in grp.Categories)
                                     {
-                                            <a href="" class="nav-item nav-link">@cat.Name</a>
+                                        <a asp-action="category" asp-controller="shop" asp-route-t="@cat.Tag" class="nav-item nav-link">@cat.Name</a>
                                     }
                                 }
                             }
@@ -235,23 +235,23 @@
         <div class="row px-xl-5 pt-5">
             <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
              
-                @if (!string.IsNullOrEmpty(@store.FooterTag))
+                @if (store != null && !string.IsNullOrEmpty(store.FooterTag))
                 {
                     <h5 class="text-secondary text-uppercase mb-4">@store.FooterTag</h5>
                 }
-                @if (!string.IsNullOrEmpty(@store.FooterDesc))
+                @if (store != null && !string.IsNullOrEmpty(store.FooterDesc))
                 {
                     <p class="mb-4">@store.FooterDesc</p>
                 }
-                @if (!string.IsNullOrEmpty(@store.Address))
+                @if (store != null && !string.IsNullOrEmpty(store.Address))
                 {
                     <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>@store.Address</p>
                 }
-                @if (!string.IsNullOrEmpty(@store.Email))
+                @if (store != null && !string.IsNullOrEmpty(store.Email))
                 {
                     <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>@store.Email</p>
                 }
-                @if (!string.IsNullOrEmpty(@store.Tel))
+                @if (store != null && !string.IsNullOrEmpty(store.Tel))
                 {
                     <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>@store.Tel</p>
                 }
@@ -292,24 +292,24 @@
                             </div>
                         </form>
                         
-                        @if (!string.IsNullOrEmpty(@store.XUrl) || !string.IsNullOrEmpty(@store.FacebookUrl) || !string.IsNullOrEmpty(@store.LinkedInUrl) || !string.IsNullOrEmpty(@store.InstagramUrl))
+                        @if (store != null && (!string.IsNullOrEmpty(store.XUrl) || !string.IsNullOrEmpty(store.FacebookUrl) || !string.IsNullOrEmpty(store.LinkedInUrl) || !string.IsNullOrEmpty(store.InstagramUrl)))
                         {
                             <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
                         }
                         <div class="d-flex">
-                            @if (!string.IsNullOrEmpty(@store.XUrl))
+                            @if (store != null && !string.IsNullOrEmpty(store.XUrl))
                             {
                                 <a class="btn btn-primary btn-square mr-2" href="@store.XUrl"><i class="fab fa-twitter"></i></a>
                             }
-                            @if (!string.IsNullOrEmpty(@store.FacebookUrl))
+                            @if (store != null && !string.IsNullOrEmpty(store.FacebookUrl))
                             {
                                 <a class="btn btn-primary btn-square mr-2" href="@store.FacebookUrl"><i class="fab fa-facebook-f"></i></a>
                             }
-                            @if (!string.IsNullOrEmpty(@store.LinkedInUrl))
+                            @if (store != null && !string.IsNullOrEmpty(store.LinkedInUrl))
                             {
                                 <a class="btn btn-primary btn-square mr-2" href="@store.LinkedInUrl"><i class="fab fa-linkedin-in"></i></a>
                             }
-                            @if (!string.IsNullOrEmpty(@store.InstagramUrl))
+                            @if (store != null && !string.IsNullOrEmpty(store.InstagramUrl))
                             {
                                 <a class="btn btn-primary btn-square" href="@store.InstagramUrl"><i class="fab fa-instagram"></i></a>
                             }

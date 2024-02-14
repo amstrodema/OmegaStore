@@ -13,6 +13,7 @@ namespace Store.Data
             modelBuilder.Entity<Item>().Property(o => o.OldPrice).HasPrecision(14, 2);
             modelBuilder.Entity<OrderItem>().Property(o => o.Qty).HasPrecision(14, 2);
             modelBuilder.Entity<OrderItem>().Property(o => o.Price).HasPrecision(14, 2);
+            modelBuilder.Entity<Offer>().Property(o => o.Discount).HasPrecision(14, 2);
         }
         public virtual DbSet<BillingDetail> BillingDetails { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -36,5 +37,8 @@ namespace Store.Data
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<LoginMonitor> LoginMonitors { get; set; }
+        public virtual DbSet<Slide> Slides { get; set; }
+        public virtual DbSet<Offer> Offers { get; set; }
+        public virtual DbSet<Brand> Brands { get; set; }
     }
 }

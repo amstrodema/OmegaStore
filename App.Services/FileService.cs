@@ -103,7 +103,24 @@ namespace App.Services
 
 
         }
+        public static void DeleteFile(string fileName)
+        {
+            try
+            {
+                var roota = AppDomain.CurrentDomain;
+                var root = roota.BaseDirectory;
+                string folder = Path.Combine(root, "Files");
+                string uniqueFileName = fileName + ".txt";
+                string filePath = Path.Combine(folder, uniqueFileName);
 
+                File.Delete(filePath);
+            }
+            catch (IOException)
+            {
+            }
+
+
+        }
         public static List<T> Shuffle<T>(List<T> list)
         {
             try

@@ -1,4 +1,9 @@
 ﻿@model Store.Model.ViewModel.MainVM
+@using Omega_Store.Services;
+@inject LoginValidator loginValidator
+@{
+    var store = await loginValidator.GetShop();
+}
 @{
     ViewData["Title"] = "Add New Item";
 }
@@ -56,7 +61,11 @@
                         <div class="input-group mb-2">
                             <select class="btn btn-dark" id="currency">
                                 <option value="NGN">NGN</option>
-                                <option value="USD">USD</option>
+                                @if (store.Level > 2)
+                                {
+                                    <option value="USD">USD</option>
+                                }
+                               
                             </select>
                             <input type="number" class="form-control" id="price" placeholder="Current Item Price" required>
                         </div>
@@ -81,9 +90,17 @@
                         </p>
                         <div class="input-group mb-2">
                             <input type="text" class="form-control" id="feature" placeholder="Item Feature (e.g Color)" aria-describedby="basic-addon2">
-                            <span class="input-group-text pointer" id="basic-addon2" onclick="Add()"><small>ADD</small></span>
+                            @if (store.Level > 2)
+                            {
+                                <span class="input-group-text pointer" id="basic-addon2" onclick="Add()"><small>ADD</small></span>
+                            }
+                           
                         </div>
                         <input type="text" class="form-control mb-2" id="option" placeholder="Feature Option (e.g. Red,Blue,Pink)" required />
+                        @if (store.Level <= 2)
+                        {
+                            <div class="text-danger">Upgrade Store to add features</div>
+                        }
                     </div>
                     <div id="featureHolder">
                     </div>
@@ -109,8 +126,12 @@
 
                         <input type="file" class="btn btn-dark full mb-2" id="CatImage1" name="image" required />
                         <input type="file" class="btn btn-dark full mb-2" id="CatImage2" name="image" required />
-                        <input type="file" class="btn btn-dark full mb-2" id="CatImage3" name="image" required />
-                        <input type="file" class="btn btn-dark full mb-2" id="CatImage4" name="image" required />
+                        @if (store.Level > 2)
+                        {
+                            <input type="file" class="btn btn-dark full mb-2" id="CatImage3" name="image" required />
+                            <input type="file" class="btn btn-dark full mb-2" id="CatImage4" name="image" required />
+                        }
+                      
                     </div>
                     <div>
                         <button class="btn btn-primary py-2 px-4" type="button" id="lastPrevBtn" onclick="MoveSection('sec3')">
@@ -308,8 +329,11 @@
             formData.append("img", $("#CatImage")[0].files[0])
             formData.append("img1", $("#CatImage1")[0].files[0])
             formData.append("img2", $("#CatImage2")[0].files[0])
-            formData.append("img3", $("#CatImage3")[0].files[0])
-            formData.append("img4", $("#CatImage4")[0].files[0])
+            try {
+                formData.append("img3", $("#CatImage3")[0].files[0])
+            } catch { }
+            try { formData.append("img4", $("#CatImage4")[0].files[0]) } catch { }
+            
 
             $.ajax({
                 type: "POST",

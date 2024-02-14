@@ -28,6 +28,10 @@ namespace Store.Data.Repository
         {
             return await GetBy(o =>  o.StoreID == storeID);
         }
+        public async Task<IEnumerable<Item>> GetByStoreIDAndCurrency(Guid storeID, string currency)
+        {
+            return await GetBy(o =>  o.StoreID == storeID && o.Currency == currency);
+        }
         public async Task<IEnumerable<Item>> GetFeatured(Guid storeID)
         {
             return await GetBy(o =>  o.StoreID == storeID && o.IsFeatured);
@@ -35,6 +39,10 @@ namespace Store.Data.Repository
         public async Task<IEnumerable<Item>> GetLatest(Guid storeID)
         {
             return await GetBy(o =>  o.StoreID == storeID && o.IsRecent);
+        }
+        public async Task<Item> GetByOfferID(Guid offerID)
+        {
+            return await GetOneBy(p => p.OfferID == offerID);
         }
     }
 }

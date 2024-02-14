@@ -30,7 +30,15 @@ function CheckFave() {
     }
     catch { }
 }
+function ClearFave() {
+    var fave = [];
+    const jsonData = JSON.stringify(fave);
+    localStorage.setItem('fave', jsonData);
 
+    location.reload();
+    
+    alertDanger("Watchlist cleared!");
+}
 function ToggleFave(itemID) {
     const retrievedFave = localStorage.getItem('fave');
     if (retrievedFave == null) {
@@ -64,29 +72,33 @@ function ToggleFave(itemID) {
  * 
  *              CART
  */
-let cartQtyNo = document.getElementById("cartQtyNo");
-let cartQtyNo2 = document.getElementById("cartQty");
-try {
-   
+loadCartData();
+function loadCartData() {
 
-    const getCartData = localStorage.getItem('cart');
-    let cart = [];
+    let cartQtyNo = document.getElementById("cartQtyNo");
+    let cartQtyNo2 = document.getElementById("cartQty");
+    try {
 
 
-    if (getCartData != null) {
-        cart = JSON.parse(getCartData);
-        
-        try {
-            var count = cart.length;
-            cartQtyNo.innerText = count;
-            cartQtyNo2.innerText = count;
-        }
-        catch (e) {
+        const getCartData = localStorage.getItem('cart');
+        let cart = [];
 
+
+        if (getCartData != null) {
+            cart = JSON.parse(getCartData);
+
+            try {
+                var count = cart.length;
+                cartQtyNo.innerText = count;
+                cartQtyNo2.innerText = count;
+            }
+            catch (e) {
+
+            }
         }
     }
+    catch { }
 }
-catch { }
 
 function AddFromItem(itemID, qtyValID) {
     let qtyVal = document.getElementById(qtyValID);
@@ -138,7 +150,6 @@ function AddToCart(itemID, qtyVal, feature) {
 
     }
     alertSuccess("Added to cart");
-    console.log(cart)
     try {
         //cartQtyNo = document.getElementById("cartQtyNo");
         cartQtyNo.innerText = cart.length;
@@ -164,10 +175,32 @@ function UpdateCartQty(index, inputID, costID, price) {
 }
 
 function ClearCart() {
-    localStorage.clear();
+    var cartHolder = document.getElementById("cartHolder");
+
+    var cart = [];
+    const jsonData = JSON.stringify(cart);
+    localStorage.setItem('cart', jsonData);
+
+    cartHolder.innerHTML = "";
+    cartHolder.innerHTML = '<div class="container-fluid"><div class="row px-xl-5">  <div class="col-12"> <div> <h5>No Content Found!</h5></div> </div> </div></div>';
+
     loadCartData();
     alertDanger("Cart cleared!");
 }
+function ClearCart() {
+    var cartHolder = document.getElementById("cartHolder");
+
+    var cart = [];
+    const jsonData = JSON.stringify(cart);
+    localStorage.setItem('cart', jsonData);
+
+    cartHolder.innerHTML = "";
+    cartHolder.innerHTML = '<div class="container-fluid"><div class="row px-xl-5">  <div class="col-12"> <div> <h5>No Content Found!</h5></div> </div> </div></div>';
+
+    loadCartData();
+    alertDanger("Cart cleared!");
+}
+
 
 function alertSuccess(val) {
     alertThis(val, "success");
@@ -441,3 +474,97 @@ function CopyToClipboard(text, alert) {
 //    document.getElementById("alertMe").append(blur)
 //}
 
+function CheckStore(storeLevel, requiredLevel) {
+    if (storeLevel >= requiredLevel) {
+        true;
+    }
+    alertDanger("Upgrade Required!")
+    return false;
+}
+
+function ResolveQuantity(isAdd, quantityID, itemPrice, itemTotalID, itemID) {
+
+    var qtyInput = document.getElementById(quantityID);
+    var itemTotal = document.getElementById(itemTotalID);
+    var subTotal = document.getElementById("subTotal");
+    var shipping = document.getElementById("shipping");
+    var total = document.getElementById("total");
+    
+    var subT = subTotal.innerText * 1;
+    var shippn = shipping.innerText * 1;
+    var itmTotal = itemTotal.innerText * 1;
+
+    subT = subT - itmTotal;
+
+
+    var val = qtyInput.value * 1;
+    var price = itemPrice * 1;
+
+    if (isAdd == "add") {
+        val++;
+    } else if (isAdd == "minus") {
+        val--;
+    }
+    val = val < 1 ? 1 : val;
+
+    qtyInput.value = val;
+    itmTotal = val * price;
+    itemTotal.innerText = itmTotal;
+
+    subT += itmTotal;
+    var totl = subT + shippn;
+    subTotal.innerText = subT;
+    total.innerText = totl;
+
+
+    const retrievedData = localStorage.getItem('cart');
+    if (retrievedData != null) {
+        var cart = JSON.parse(retrievedData);
+        const index = cart.findIndex(o => o.hasOwnProperty("ID") && o["ID"] === itemID);
+        cart[index].Qty = val;
+
+        const jsonData = JSON.stringify(cart);
+        localStorage.setItem('cart', jsonData);
+    }
+    
+}
+
+
+function RemoveFromCart(ID, tableIndex, totalLabel) {
+    var cartTable = document.getElementById("cartTable");
+    const retrievedData = localStorage.getItem('cart');
+
+    if (retrievedData != null) {
+
+        var itemTotal = document.getElementById(totalLabel);
+        var total = document.getElementById("total");
+        var subTotal = document.getElementById("subTotal");
+        var shipping = document.getElementById("shipping");
+
+        var subT = subTotal.innerText * 1;
+        var itmTotal = itemTotal.innerText * 1;
+        var shippn = shipping.innerText * 1;
+
+        subT -= itmTotal;
+        subTotal.innerText = subT;
+        total.innerText = subT + shippn;
+
+        var cart = JSON.parse(retrievedData);
+        const index = cart.findIndex(o => o.hasOwnProperty("ID") && o["ID"] === ID);
+
+        cartTable.deleteRow(index+1);
+
+        
+        cart.splice(index, 1);
+
+        const jsonData = JSON.stringify(cart);
+        localStorage.setItem('cart', jsonData);
+
+        loadCartData();
+
+      
+        //console.log(cartTable.rows.length);
+        //console.log(tableIndex);
+       
+    }
+}

@@ -17,8 +17,10 @@ namespace Omega_Store.Controllers
         private readonly CategoryBusiness _categoryBusiness;
         private readonly GroupBusiness _groupBusiness;
         private readonly StoreBusiness _storeBusiness;
+        private readonly SlideBusiness _slideBusiness;
+        private readonly OfferBusiness _offerBusiness;
         public ManagerController(UserBusiness userBusiness, IHttpContextAccessor context, LoginValidator loginValidator, CategoryBusiness categoryBusiness,
-            GroupBusiness groupBusiness, StoreBusiness storeBusiness)
+            GroupBusiness groupBusiness, StoreBusiness storeBusiness, SlideBusiness slideBusiness, OfferBusiness offerBusiness)
         {
             _userBusiness = userBusiness;
             _context = context;
@@ -26,6 +28,8 @@ namespace Omega_Store.Controllers
             _categoryBusiness = categoryBusiness;
             _groupBusiness = groupBusiness;
             _storeBusiness = storeBusiness;
+            _slideBusiness = slideBusiness;
+            _offerBusiness = offerBusiness;
         }
         private void SetFeedBack(int code, string message)
         {
@@ -495,9 +499,65 @@ namespace Omega_Store.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> Offers()
+        public async Task<IActionResult> Offers(string s, Guid id)
         {
-            return View("offerholder/index");
+            var user = await _loginValidator.GetUserAuth();
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+            else if (s == "add")
+            {
+                return View("offerholder/add");
+            }
+            else if (s == "delete" && id != default)
+            {
+                var res = await _offerBusiness.Delete(id);
+                if (res.StatusCode != 200)
+                {
+                    TempData["MessageError"] = res.Message;
+                }
+                else
+                {
+                    TempData["MessageSuccess"] = res.Message;
+                }
+                return RedirectToAction("offers");
+            }
+            else if (s == "home" && id != default)
+            {
+                var res = await _offerBusiness.ToggleHome(id);
+                if (res.StatusCode != 200)
+                {
+                    TempData["MessageError"] = res.Message;
+                }
+                else
+                {
+                    TempData["MessageSuccess"] = res.Message;
+                }
+                return RedirectToAction("offers");
+            }
+            var offers = await _offerBusiness.Get();
+            return View("offerholder/index", offers);
+        }
+
+        public async Task<IActionResult> NewOffer(Offer offer, IFormFile image)
+        {
+            var user = await _loginValidator.GetUserAuth();
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+            var res = await _offerBusiness.Create(offer, image, user.ID);
+            if (res.StatusCode != 200)
+            {
+                TempData["MessageError"] = res.Message;
+                return RedirectToAction("offers", new { s = "add" });
+            }
+            else
+            {
+                TempData["MessageSuccess"] = res.Message;
+                return RedirectToAction("offers");
+            }
         }
         public async Task<IActionResult> Mails()
         {
@@ -511,9 +571,51 @@ namespace Omega_Store.Controllers
         {
             return View("AdsIntegrationHolder/index");
         }
-        public async Task<IActionResult> HomepageManager()
+        public async Task<IActionResult> Slides(string s, Guid id)
         {
-            return View("HomePageHolder/index");
+            var user = await _loginValidator.GetUserAuth();
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+            if (s == "add" )
+            {
+                return View("slideHolder/add");
+            }
+            if (s == "delete" && id != default )
+            {
+               var res = await _slideBusiness.Delete(id);
+                if (res.StatusCode != 200)
+                {
+                    TempData["MessageError"] = res.Message;
+                }
+                else
+                {
+                    TempData["MessageSuccess"] = res.Message;
+                }
+                return RedirectToAction("slides");
+            }
+            var slides = await _slideBusiness.Get();
+            return View("slideHolder/index", slides);
+        }
+        public async Task<IActionResult> NewSlide(Slide slide, IFormFile image)
+        {
+            var user = await _loginValidator.GetUserAuth();
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+            var res = await _slideBusiness.Create(slide, image, user.ID);
+            if (res.StatusCode != 200)
+            {
+                TempData["MessageError"] = res.Message;
+                return RedirectToAction("slides", new { s = "add" });
+            }
+            else
+            {
+                TempData["MessageSuccess"] = res.Message;
+                return RedirectToAction("slides");
+            }
         }
     }
 }
